@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IOwner } from '../../../../domains/interface/owner/owner.interface';
+import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
 
 export class AccountSingUpDto {
     @ApiProperty({ example: 'task_create_success' })

@@ -1,10 +1,10 @@
-import { AccountIdDto } from './dto/account-id.dto';
+import { AccountIdDto } from './dto/account/account-id.dto';
 import { IServiceAccountSearchByAccountIdResponse } from '@/domains/interface/account/service-account-search-by-account-id-response.interface';
 import { Controller, Get, HttpException, HttpStatus, Inject, Param } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
-import { GetAccountDto } from './dto/get-account.dto';
+import { GetAccountDto } from './dto/account/get-account.dto';
 
 @Controller('business')
 @ApiTags('business')

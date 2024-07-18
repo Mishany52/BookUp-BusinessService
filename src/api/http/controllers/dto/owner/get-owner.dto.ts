@@ -2,8 +2,19 @@ import { IBusiness } from '@/domains/interface/business/business.interface';
 import { IOwner } from '@/domains/interface/owner/owner.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsUrl, IsUUID } from 'class-validator';
+import { UUID } from 'crypto';
 
 export class GetOwnerDto {
+    @IsUUID()
+    @ApiProperty({
+        example: '6b75fe4f-b5a5-4bda-95a2-b56ea489d608',
+    })
+    id: UUID;
+    @IsUUID()
+    @ApiProperty({
+        example: '6b75fe4f-b5a5-4bda-95a2-b56ea489d608',
+    })
+    accountId: UUID;
     @IsEmail()
     @ApiProperty({
         uniqueItems: true,
@@ -31,16 +42,18 @@ export class GetOwnerDto {
     })
     businesses: IBusiness[];
     @ApiProperty({
-        example: 'false',
+        example: 'true',
     })
-    archive: boolean;
+    active: boolean;
 
     constructor(model: IOwner) {
+        this.id = model.id;
+        this.accountId = model.accountId;
         this.email = model.email;
         this.phone = model.phone;
         this.fio = model.fio;
         this.businesses = model.businesses;
         this.imgUrl = model.imgUrl;
-        this.archive = model.archive;
+        this.active = model.active;
     }
 }

@@ -1,5 +1,7 @@
+import { UUID } from 'crypto';
+
 export interface IAccount {
-    id?: string;
+    id?: UUID;
     role: string;
     email: string;
     phone: string;

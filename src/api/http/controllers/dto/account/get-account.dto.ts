@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IAccount } from '../../../../domains/interface/account/account.interface';
+import { IAccount } from '../../../../../domains/interface/account/account.interface';
 
 export class GetAccountDto {
     @ApiProperty({ example: 'account_search_success' })

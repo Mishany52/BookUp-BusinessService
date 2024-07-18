@@ -1,6 +1,6 @@
 import { IAccount } from './account.interface';
 
-export interface IServiceAccountSingUpResponse {
+export interface IServiceAccountDeactivateResponse {
     status: number;
     message: string;
     data: IAccount | null;

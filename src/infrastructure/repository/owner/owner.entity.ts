@@ -2,15 +2,16 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IOwner } from '../../../domains/interface/owner/owner.interface';
 import { BusinessEntity } from '../business/business.entity';
 import { MinLength } from 'class-validator';
+import { UUID } from 'crypto';
 
 @Entity({ name: 'owners' })
 export class OwnerEntity implements IOwner {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: UUID;
     @Column({ type: 'uuid', nullable: false })
-    accountId: string;
+    accountId: UUID;
 
-    @Column({ type: 'varchar', length: 11, unique: true, nullable: false })
+    @Column({ type: 'varchar', unique: true, nullable: false })
     @MinLength(11)
     phone: string;
     @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
@@ -25,9 +26,9 @@ export class OwnerEntity implements IOwner {
     imgUrl: string;
     @Column({
         type: 'boolean',
-        default: false,
+        default: true,
     })
-    archive: boolean;
+    active: boolean;
     @OneToMany(() => BusinessEntity, (business) => business.owner)
     businesses: BusinessEntity[];
 }

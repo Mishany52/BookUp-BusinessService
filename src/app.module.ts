@@ -6,7 +6,7 @@ import { BusinessController } from './api/http/controllers/business.controller';
 import { configuration } from './config/configuration';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { BusinessModule } from './domains/business/business.module';
-import { OwnerModule } from './domains/interface/owner/owner.module';
+import { OwnerModule } from './domains/owner/owner.module';
 
 @Module({
     imports: [

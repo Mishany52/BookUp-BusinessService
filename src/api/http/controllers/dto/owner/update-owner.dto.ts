@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, IsUrl, IsUUID } from 'class-validator';
-import { IOwner } from '../../../../domains/interface/owner/owner.interface';
+import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
 import { IBusiness } from '@/domains/interface/business/business.interface';
 
 export class OwnerUpdateDto implements IOwner {
@@ -32,7 +32,7 @@ export class OwnerUpdateDto implements IOwner {
     })
     businesses: IBusiness[];
     @ApiProperty({
-        example: 'false',
+        example: 'true',
     })
-    archive: boolean;
+    active: boolean;
 }

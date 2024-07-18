@@ -1,12 +1,25 @@
-import { OwnerService } from '@/domains/interface/owner/owner.service';
-import { Body, Controller, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
+import { OwnerService } from '@/domains/owner/owner.service';
+import {
+    Body,
+    Controller,
+    HttpException,
+    HttpStatus,
+    Inject,
+    Param,
+    ParseUUIDPipe,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RequestOwnerDto } from './dto/request-owner.dto';
+import { RequestOwnerDto } from './dto/owner/request-owner.dto';
 import { IServiceAccountSingUpResponse } from '@/domains/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { ResponseCreatedOwnerDto } from './dto/response-created-owner.dto';
+import { ResponseCreatedOwnerDto } from './dto/owner/response-created-owner.dto';
 import { AccountRole } from '@/domains/enums/account-role';
+import { CreateOwnerDto } from './dto/owner/create-owner.dto';
+import { UUID } from 'crypto';
+import { GetOwnerDto } from './dto/owner/get-owner.dto';
 
 @ApiTags('Owner')
 @Controller('owner')
@@ -20,11 +33,13 @@ export class OwnerController {
     @ApiResponse({ status: 200 })
     @Post('createOwner')
     async createOwner(@Body() ownerRequest: RequestOwnerDto): Promise<ResponseCreatedOwnerDto> {
+        const ownerRequestWithRole = {
+            ...ownerRequest,
+            role: AccountRole.owner,
+        };
+
         const singUpAccountResponse: IServiceAccountSingUpResponse = await firstValueFrom(
-            this._ssoServiceClient.send(
-                { cmd: 'account_sing_up' },
-                Object.assign(ownerRequest, { role: AccountRole.owner }),
-            ),
+            this._ssoServiceClient.send({ cmd: 'account_sing_up' }, ownerRequestWithRole),
         );
 
         if (singUpAccountResponse.status !== HttpStatus.OK) {
@@ -37,11 +52,17 @@ export class OwnerController {
                 singUpAccountResponse.status,
             );
         }
-        const createOwnerDto = Object.assign(ownerRequest, {
-            accountId: singUpAccountResponse.account.id,
-        });
-        const test = await this._ownerService.create(createOwnerDto);
-        console.log(test);
-        return new ResponseCreatedOwnerDto({ ...singUpAccountResponse.account });
+        const createOwnerDto = new CreateOwnerDto(singUpAccountResponse.data);
+
+        await this._ownerService.create(createOwnerDto);
+
+        return new ResponseCreatedOwnerDto({ ...singUpAccountResponse.data });
+    }
+
+    @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
+    @ApiResponse({ status: 200 })
+    @Put('deactivateOwner/:id')
+    async delete(@Param('id', ParseUUIDPipe) ownerId: UUID): Promise<GetOwnerDto> {
+        return this._ownerService.deactivate(ownerId);
     }
 }
