@@ -1,6 +1,8 @@
+import { UUID } from 'crypto';
+
 export interface IBusiness {
-    id: string;
-    ownerId: string;
+    id: UUID;
+    ownerId: UUID;
     //!Потом определим enum
     sudCategoryId: string;
     name: string;

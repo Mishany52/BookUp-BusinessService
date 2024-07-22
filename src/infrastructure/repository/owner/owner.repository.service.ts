@@ -10,7 +10,7 @@ import {
     OWNER_NOT_FOUND_BY_ID,
     OWNER_NOT_UPDATE,
 } from '@/infrastructure/constants/http-messages/errors.constants';
-import { OwnerUpdateDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
+import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 import { UUID } from 'crypto';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class OwnerRepository implements IOwnerRepository {
             throw new Error(OWNER_CREATION_FAILED);
         }
     }
-    async update(ownerUpdate: OwnerUpdateDto): Promise<IOwner> {
+    async update(ownerUpdate: UpdateOwnerDto): Promise<IOwner> {
         try {
             const owner = await this._ownerRepository.save(ownerUpdate);
             return owner;

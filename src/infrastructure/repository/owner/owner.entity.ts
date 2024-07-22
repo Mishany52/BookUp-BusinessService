@@ -10,7 +10,6 @@ export class OwnerEntity implements IOwner {
     id: UUID;
     @Column({ type: 'uuid', nullable: false })
     accountId: UUID;
-
     @Column({ type: 'varchar', unique: true, nullable: false })
     @MinLength(11)
     phone: string;

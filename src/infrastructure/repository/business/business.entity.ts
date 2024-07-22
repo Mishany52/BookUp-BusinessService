@@ -2,14 +2,16 @@ import { IBusiness } from '@/domains/interface/business/business.interface';
 import { MinLength } from 'class-validator';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { OwnerEntity } from '../owner/owner.entity';
+import { UUID } from 'crypto';
 
 @Entity({ name: 'businesses' })
 export class BusinessEntity implements IBusiness {
     @PrimaryGeneratedColumn('uuid')
-    id!: string;
+    id!: UUID;
     @Column({ type: 'uuid', nullable: false })
-    ownerId!: string;
-    //! Предполагаю, что sudCategoryId будет enum. Пока оставляем как string
+    ownerId!: UUID;
+    //! Предполагаю, что sudCategoryId будет enum.
+    //! Пока оставляем как string
     @Column({ type: 'varchar', nullable: false })
     sudCategoryId!: string;
     @Column({ type: 'varchar', nullable: false })

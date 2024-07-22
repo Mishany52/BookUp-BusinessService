@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiProperty } from '@nestjs/swagger';
 import { IAccount } from '../../../../../domains/interface/account/account.interface';
 
@@ -20,6 +21,5 @@ export class GetAccountDto {
         account: IAccount;
     };
     @ApiProperty({ example: 'null' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     errors: { [key: string]: any };
 }

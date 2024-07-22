@@ -4,7 +4,7 @@ import * as path from 'path';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 
-config({ path: '/business/.env' });
+config({ path: '.env' });
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const AppDataSource = new DataSource({
     type: 'postgres',

@@ -1,38 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsPhoneNumber, IsString, IsUrl, IsUUID } from 'class-validator';
-import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
-import { IBusiness } from '@/domains/interface/business/business.interface';
+import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
+import { CreateOwnerDto } from './create-owner.dto';
+import { IsOptional, IsUrl } from 'class-validator';
 
-export class OwnerUpdateDto implements IOwner {
-    @IsEmail()
-    @ApiProperty({
-        uniqueItems: true,
-        example: 'test@gmail.com',
-    })
-    email: string;
-    @IsPhoneNumber('RU')
-    @ApiProperty({
-        uniqueItems: true,
-        example: '+79000000000',
-    })
-    phone: string;
-    @IsString()
+export class UpdateOwnerDto extends PartialType(OmitType(CreateOwnerDto, ['accountId'] as const)) {
+    @IsOptional()
     @IsUrl()
-    @ApiProperty({
-        example: 'пока не знаем',
-    })
-    imgUrl: string;
-    @ApiProperty({
-        example: 'Иванов Иван Иванович',
-    })
-    fio: string;
-    @IsUUID()
-    @ApiProperty({
-        example: ['6b75fe4f-b5a5-4bda-95a2-b56ea489d608'],
-    })
-    businesses: IBusiness[];
-    @ApiProperty({
-        example: 'true',
-    })
-    active: boolean;
+    @ApiProperty({ example: 'Пока не знаем 2' })
+    imgUrl?: string;
 }

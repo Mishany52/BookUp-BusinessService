@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
-import { BusinessController } from './api/http/controllers/business.controller';
+import { BusinessMicroserviceController } from './api/microservice/controllers/business-microservice.controller';
 import { configuration } from './config/configuration';
-import { ClientProxyFactory } from '@nestjs/microservices';
 import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
+import { accountServiceProvider } from './domains/account/account-service-persistence.provider';
 
 @Module({
     imports: [
@@ -25,16 +25,7 @@ import { OwnerModule } from './domains/owner/owner.module';
         BusinessModule,
         OwnerModule,
     ],
-    controllers: [BusinessController],
-    providers: [
-        {
-            provide: 'ACCOUNT_SERVICE',
-            useFactory: (config: ConfigService) => {
-                const accountServiceOptions = config.get('accountService');
-                return ClientProxyFactory.create(accountServiceOptions);
-            },
-            inject: [ConfigService],
-        },
-    ],
+    controllers: [BusinessMicroserviceController],
+    providers: [accountServiceProvider],
 })
 export class AppModule {}

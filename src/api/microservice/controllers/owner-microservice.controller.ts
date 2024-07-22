@@ -7,26 +7,29 @@ import {
     Inject,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
-    Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RequestOwnerDto } from './dto/owner/request-owner.dto';
+import { RequestOwnerDto } from '../../http/controllers/dto/owner/request-owner.dto';
 import { IServiceAccountSingUpResponse } from '@/domains/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { ResponseCreatedOwnerDto } from './dto/owner/response-created-owner.dto';
+import { ResponseCreatedOwnerDto } from '../../http/controllers/dto/owner/response-created-owner.dto';
 import { AccountRole } from '@/domains/enums/account-role';
-import { CreateOwnerDto } from './dto/owner/create-owner.dto';
+import { CreateOwnerDto } from '../../http/controllers/dto/owner/create-owner.dto';
 import { UUID } from 'crypto';
-import { GetOwnerDto } from './dto/owner/get-owner.dto';
+import { GetOwnerDto } from '../../http/controllers/dto/owner/get-owner.dto';
+import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
+
+const accountService = () => Inject('ACCOUNT_SERVICE');
 
 @ApiTags('Owner')
 @Controller('owner')
-export class OwnerController {
+export class OwnerMicroserviceController {
     constructor(
         private readonly _ownerService: OwnerService,
-        @Inject('ACCOUNT_SERVICE') private readonly _ssoServiceClient: ClientProxy,
+        @accountService() private readonly _ssoServiceClient: ClientProxy,
     ) {}
 
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
@@ -61,8 +64,18 @@ export class OwnerController {
 
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Put('deactivateOwner/:id')
+    @Patch('deactivateOwner/:id')
     async delete(@Param('id', ParseUUIDPipe) ownerId: UUID): Promise<GetOwnerDto> {
         return this._ownerService.deactivate(ownerId);
+    }
+
+    @ApiOperation({ summary: 'Обновления данных владельца бизнеса' })
+    @ApiResponse({ status: 200 })
+    @Patch('updateOwner/:id')
+    async update(
+        @Param('id') ownerId: UUID,
+        @Body() updateOwnerDto: UpdateOwnerDto,
+    ): Promise<GetOwnerDto> {
+        return this._ownerService.update(ownerId, updateOwnerDto);
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiProperty } from '@nestjs/swagger';
 import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
 
@@ -21,6 +22,5 @@ export class AccountSingUpDto {
         task: IOwner;
     };
     @ApiProperty({ example: null, nullable: true })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     errors: { [key: string]: any };
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IAccount } from './account.interface';
 
-export interface IServiceAccountSingUpResponse {
+export interface IServiceAccountUpdateResponse {
     status: number;
     message: string;
     data: IAccount | null;
