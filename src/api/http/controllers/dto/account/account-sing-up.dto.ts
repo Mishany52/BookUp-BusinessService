@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
 
-export class AccountSingUpDto {
+export class SSOSingUpDto {
     @ApiProperty({ example: 'task_create_success' })
     message: string;
     @ApiProperty({

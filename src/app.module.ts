@@ -6,7 +6,7 @@ import { BusinessMicroserviceController } from './api/microservice/controllers/b
 import { configuration } from './config/configuration';
 import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
-import { accountServiceProvider } from './domains/account/account-service-persistence.provider';
+import { ssoServiceProvider } from './domains/account/sso-service-persistence.provider';
 
 @Module({
     imports: [
@@ -25,6 +25,6 @@ import { accountServiceProvider } from './domains/account/account-service-persis
         OwnerModule,
     ],
     controllers: [BusinessMicroserviceController],
-    providers: [accountServiceProvider],
+    providers: [ssoServiceProvider],
 })
 export class AppModule {}

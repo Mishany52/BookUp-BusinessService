@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { OwnerRepositoryModule } from '@/infrastructure/repository/owner/owner-repository.module';
 import { OwnerService } from './owner.service';
 import { OwnerMicroserviceController } from '@/api/microservice/controllers/owner-microservice.controller';
-import { accountServiceProvider } from '../account/account-service-persistence.provider';
+import { ssoServiceProvider } from '../account/sso-service-persistence.provider';
 
 @Module({
     imports: [OwnerRepositoryModule],
     controllers: [OwnerMicroserviceController],
-    providers: [OwnerService, accountServiceProvider],
+    providers: [OwnerService, ssoServiceProvider],
     exports: [OwnerService],
 })
 export class OwnerModule {}

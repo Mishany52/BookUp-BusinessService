@@ -6,12 +6,12 @@ import { firstValueFrom } from 'rxjs';
 import { GetAccountDto } from '../../http/controllers/dto/account/get-account.dto';
 import { UUID } from 'crypto';
 
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ssoService = () => Inject('SSO_SERVICE');
 
 @Controller('business')
 @ApiTags('business')
 export class BusinessMicroserviceController {
-    constructor(@accountService() private readonly _accountServiceClient: ClientProxy) {}
+    constructor(@ssoService() private readonly _ssoServiceClient: ClientProxy) {}
 
     @Get(':id')
     @ApiOkResponse({
@@ -19,7 +19,7 @@ export class BusinessMicroserviceController {
     })
     public async getAccountById(@Param('id') id: UUID): Promise<GetAccountDto> {
         const getAccountResponse: IServiceAccountSearchByAccountIdResponse = await firstValueFrom(
-            this._accountServiceClient.send(
+            this._ssoServiceClient.send(
                 { cmd: 'account_search_by_account_id' },
                 { accountId: id },
             ),

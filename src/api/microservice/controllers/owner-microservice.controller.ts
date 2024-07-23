@@ -22,19 +22,19 @@ import { UUID } from 'crypto';
 import { GetOwnerDto } from '../../http/controllers/dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ssoService = () => Inject('SSO_SERVICE');
 
 @ApiTags('Owner')
 @Controller('owner')
 export class OwnerMicroserviceController {
     constructor(
         private readonly _ownerService: OwnerService,
-        @accountService() private readonly _ssoServiceClient: ClientProxy,
+        @ssoService() private readonly _ssoServiceClient: ClientProxy,
     ) {}
 
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Post('createOwner')
+    @Post('create')
     async createOwner(@Body() ownerRequest: RequestOwnerDto): Promise<ResponseCreatedOwnerDto> {
         const ownerRequestWithRole = {
             ...ownerRequest,
@@ -42,7 +42,7 @@ export class OwnerMicroserviceController {
         };
 
         const singUpAccountResponse: IServiceAccountSingUpResponse = await firstValueFrom(
-            this._ssoServiceClient.send({ cmd: 'account_sing_up' }, ownerRequestWithRole),
+            this._ssoServiceClient.send({ cmd: 'auth_sing_up' }, ownerRequestWithRole),
         );
 
         if (singUpAccountResponse.status !== HttpStatus.OK) {
@@ -64,14 +64,14 @@ export class OwnerMicroserviceController {
 
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Patch('deactivateOwner/:id')
+    @Patch('deactivate/:id')
     async delete(@Param('id', ParseUUIDPipe) ownerId: UUID): Promise<GetOwnerDto> {
         return this._ownerService.deactivate(ownerId);
     }
 
     @ApiOperation({ summary: 'Обновления данных владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Patch('updateOwner/:id')
+    @Patch('update/:id')
     async update(
         @Param('id') ownerId: UUID,
         @Body() updateOwnerDto: UpdateOwnerDto,

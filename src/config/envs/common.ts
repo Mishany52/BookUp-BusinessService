@@ -9,10 +9,10 @@ export const config = {
     jwtRefreshExpires: process.env.JWT_REFRESH_EXPIRES,
     jwtAccessExpires: process.env.JWT_ACCESS_EXPIRES,
 
-    accountService: {
+    ssoService: {
         options: {
-            port: process.env.ACCOUNT_SERVICE_PORT,
-            host: process.env.ACCOUNT_SERVICE_HOST,
+            port: process.env.SSO_SERVICE_PORT,
+            host: process.env.SSO_SERVICE_HOST,
         },
         transport: Transport.TCP,
     },

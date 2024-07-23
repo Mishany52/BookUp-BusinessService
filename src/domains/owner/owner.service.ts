@@ -11,17 +11,17 @@ import { UUID } from 'crypto';
 import { IServiceAccountDeactivateResponse } from '../interface/account/service-account-deactivate-by-id.interface';
 import { firstValueFrom } from 'rxjs';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
-import { IServiceAccountUpdateResponse } from '../interface/account/service-account-update-by-id.interface';
+import { ISSOServiceUpdateResponse } from '../interface/account/service-account-update-by-id.interface';
 import { IOwner } from '../interface/owner/owner.interface';
 
 const ownerRepo = () => Inject('ownerRepo');
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ssoService = () => Inject('SSO_SERVICE');
 
 @Injectable()
 export class OwnerService {
     constructor(
         @ownerRepo() private readonly _ownerRepository: IOwnerRepository,
-        @accountService() private readonly _ssoServiceClient: ClientProxy,
+        @ssoService() private readonly _ssoServiceClient: ClientProxy,
     ) {}
 
     async create(ownerDto: CreateOwnerDto): Promise<GetOwnerDto> {
@@ -32,7 +32,7 @@ export class OwnerService {
     async update(ownerId: UUID, updateOwnerDto: Partial<UpdateOwnerDto>): Promise<GetOwnerDto> {
         const owner = await this.getOwnerById(ownerId);
         updateOwnerDto = await this.getUpdateFields(owner, updateOwnerDto);
-        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
+        const accountUpdateResponse: ISSOServiceUpdateResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
                     cmd: 'update_account_by_id',

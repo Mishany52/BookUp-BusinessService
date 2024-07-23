@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SSOLogger } from './infrastructure/logger/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
     const logger = new SSOLogger();
@@ -12,6 +13,8 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
     );
+    app.use(cookieParser());
+
     app.enableCors({
         origin: `${configService.get('frontUri')}:${configService.get('frontPort')}`,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -19,11 +22,10 @@ async function bootstrap() {
     });
     const PORT = configService.get('apiPort') || 3000;
     const config = new DocumentBuilder()
-        .setTitle('Parts Lib')
-        .setDescription('The Parts library')
-        // .setVersion('1.0')
-        .addTag('Parts')
+        .setTitle('Business')
+        .setDescription('The Business Api')
         .build();
+
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 

@@ -1,11 +1,11 @@
 import { Provider } from '@nestjs/common';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
-export const accountServiceProvider: Provider = {
-    provide: 'ACCOUNT_SERVICE',
+export const ssoServiceProvider: Provider = {
+    provide: 'SSO_SERVICE',
     useFactory: (config: ConfigService) => {
-        const accountServiceOptions = config.get('accountService');
-        return ClientProxyFactory.create(accountServiceOptions);
+        const ssoServiceOptions = config.get('ssoService');
+        return ClientProxyFactory.create(ssoServiceOptions);
     },
     inject: [ConfigService],
 };
