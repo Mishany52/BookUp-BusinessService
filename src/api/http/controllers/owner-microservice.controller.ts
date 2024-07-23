@@ -11,15 +11,15 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RequestOwnerDto } from '../../http/controllers/dto/owner/request-owner.dto';
+import { RequestOwnerDto } from './dto/owner/request-owner.dto';
 import { IServiceAccountSingUpResponse } from '@/domains/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { ResponseCreatedOwnerDto } from '../../http/controllers/dto/owner/response-created-owner.dto';
+import { ResponseCreatedOwnerDto } from './dto/owner/response-created-owner.dto';
 import { AccountRole } from '@/domains/enums/account-role';
-import { CreateOwnerDto } from '../../http/controllers/dto/owner/create-owner.dto';
+import { CreateOwnerDto } from './dto/owner/create-owner.dto';
 import { UUID } from 'crypto';
-import { GetOwnerDto } from '../../http/controllers/dto/owner/get-owner.dto';
+import { GetOwnerDto } from './dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 
 const ssoService = () => Inject('SSO_SERVICE');

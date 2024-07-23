@@ -8,19 +8,19 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
     const logger = new SSOLogger();
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: true });
     const configService = app.get(ConfigService);
-    app.useGlobalPipes(
-        new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
-    );
+    const PORT = configService.get('apiPort') || 3000;
+
     app.use(cookieParser());
+    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
     app.enableCors({
         origin: `${configService.get('frontUri')}:${configService.get('frontPort')}`,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
-    const PORT = configService.get('apiPort') || 3000;
+    
     const config = new DocumentBuilder()
         .setTitle('Business')
         .setDescription('The Business Api')
@@ -30,7 +30,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     await app.listen(PORT);
-    logger.verbose(`Parts service start on port: ${PORT}`);
+    logger.verbose(`Business service start on port: ${PORT}`);
 }
 
 bootstrap();
