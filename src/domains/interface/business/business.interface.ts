@@ -3,8 +3,7 @@ import { UUID } from 'crypto';
 export interface IBusiness {
     id: UUID;
     ownerId: UUID;
-    //!Потом определим enum
-    sudCategoryId: string;
+    sudCategoryId: number;
     name: string;
     description?: string;
     address: string;
