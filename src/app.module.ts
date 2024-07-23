@@ -12,7 +12,6 @@ import { accountServiceProvider } from './domains/account/account-service-persis
     imports: [
         ConfigModule.forRoot({
             load: [configuration],
-            envFilePath: '/.example.env',
             isGlobal: true,
         }),
         TypeOrmModule.forRootAsync({

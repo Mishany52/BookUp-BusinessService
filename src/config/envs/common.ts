@@ -17,4 +17,6 @@ export const config = {
         transport: Transport.TCP,
     },
     apiPort: process.env.API_PORT_BUSINESS,
+    frontUri: process.env.FRONT_URI,
+    frontPort: process.env.FRONT_PORT,
 };
