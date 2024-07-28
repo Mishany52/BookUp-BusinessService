@@ -24,7 +24,7 @@ module.exports = {
             'error',
             {
                 selector: 'default',
-                format: ['camelCase'],
+                format: ['camelCase', 'UPPER_CASE'],
             },
             {
                 selector: 'variable',
@@ -32,7 +32,7 @@ module.exports = {
             },
             {
                 selector: 'parameter',
-                format: ['camelCase'],
+                format: ['camelCase', ],
             },
             {
                 selector: 'memberLike',

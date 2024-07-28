@@ -1,7 +1,7 @@
 import { IAccount } from '@/domains/interface/account/account.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ResponseCreatedOwnerDto {
+export class ResponseCreatedAdminDto {
     @ApiProperty({
         uniqueItems: true,
         example: 'test@gmail.com',

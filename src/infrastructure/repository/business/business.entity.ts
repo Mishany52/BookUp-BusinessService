@@ -1,30 +1,26 @@
 import { IBusiness } from '@/domains/interface/business/business.interface';
-import { MinLength } from 'class-validator';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OwnerEntity } from '../owner/owner.entity';
-import { UUID } from 'crypto';
+import { AdministratorEntity } from '../administrator/administrator.entity';
+import { PointEntity } from '../point/point.entity';
+import { EmployeeEntity } from '../employee/employee.entity';
+import { IWorkTime } from '@/domains/interface/time/workTime.interface';
 
 @Entity({ name: 'businesses' })
 export class BusinessEntity implements IBusiness {
-    @PrimaryGeneratedColumn('uuid')
-    id: UUID;
-    @Column({ type: 'uuid', nullable: false })
-    ownerId: UUID;
-    @Column({ type: 'integer', nullable: true, default: null })
-    sudCategoryId: number;
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column({ type: 'varchar', nullable: false })
     name: string;
     @Column({ type: 'varchar', nullable: true })
     description: string;
     @Column({ type: 'varchar', nullable: false })
     address: string;
-    @Column({ type: 'varchar', length: 6, nullable: false })
-    @MinLength(6)
-    postIndex: string;
-    @Column({ type: 'time', nullable: false })
-    startAt: string;
-    @Column({ type: 'time', nullable: false })
-    stopAt: string;
+    @Column({ type: 'json' })
+    weekWorkTime: IWorkTime;
+    @Column({ type: 'integer', nullable: false })
+    postIndex: number;
     @Column({ type: 'varchar', nullable: true })
     siteUrl: string;
     @Column({ type: 'varchar', nullable: true })
@@ -32,4 +28,11 @@ export class BusinessEntity implements IBusiness {
 
     @ManyToOne(() => OwnerEntity, (owner) => owner.businesses)
     owner: OwnerEntity;
+    @OneToMany(() => AdministratorEntity, (administrator) => administrator.business)
+    administrator: AdministratorEntity[];
+    @OneToMany(() => PointEntity, (point) => point.business)
+    points: PointEntity[];
+    @OneToMany(() => EmployeeEntity, (employee) => employee.business)
+    employees: EmployeeEntity[];
+    tags: number;
 }

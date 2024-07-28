@@ -1,9 +1,6 @@
 import { CreateOwnerDto } from '@/api/http/controllers/dto/owner/create-owner.dto';
 import { GetOwnerDto } from '@/api/http/controllers/dto/owner/get-owner.dto';
-import {
-    OWNER_NOT_FOUND_BY_ID,
-    OWNER_NOT_UPDATE,
-} from '@/infrastructure/constants/http-messages/errors.constants';
+import { OwnerError } from '@/infrastructure/constants/http-messages/errors.constants';
 import { IOwnerRepository } from '@/infrastructure/repository/owner/owner.repository.interface';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -15,7 +12,7 @@ import { IServiceAccountUpdateResponse } from '../interface/account/service-acco
 import { IOwner } from '../interface/owner/owner.interface';
 
 const ownerRepo = () => Inject('ownerRepo');
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const accountService = () => Inject('ssoService');
 
 @Injectable()
 export class OwnerService {
@@ -53,7 +50,7 @@ export class OwnerService {
         Object.assign(owner, updateOwnerDto);
         const ownerUpdate = await this._ownerRepository.update(owner);
         if (!ownerUpdate) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
         return new GetOwnerDto(owner);
     }
@@ -81,7 +78,7 @@ export class OwnerService {
         }
         const ownerUpdate = await this._ownerRepository.update(owner);
         if (!ownerUpdate) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
         return new GetOwnerDto(owner);
     }
@@ -89,7 +86,7 @@ export class OwnerService {
     async getOwnerById(ownerId: UUID): Promise<GetOwnerDto> {
         const owner = await this._ownerRepository.getById(ownerId);
         if (!owner) {
-            throw new HttpException(OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
+            throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
         return new GetOwnerDto(owner);
     }
@@ -105,7 +102,7 @@ export class OwnerService {
             Object.keys(updateOwnerDto).length === 0 ||
             !Object.keys(updateOwnerDto).some((key) => updateOwnerDto[key] !== undefined)
         ) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
 
         //Собираем объект из полей, которые имеют новые данные для обновления

@@ -2,7 +2,7 @@ import { IOwner } from '../owner/owner.interface';
 import { IAdministrator } from '../administrator/administrator.interface';
 import { IWorkTime } from '../time/workTime.interface';
 
-export interface IBusiness {
+export interface IBusinessDomainEntity {
     id: number;
     name: string;
     description: string;
@@ -12,5 +12,5 @@ export interface IBusiness {
     siteUrl: string;
     logoUrl: string;
     owner: IOwner;
-    administrator: IAdministrator[];
+    administrator: Array<IAdministrator>;
 }

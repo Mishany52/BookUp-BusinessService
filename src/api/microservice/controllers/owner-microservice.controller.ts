@@ -15,27 +15,26 @@ import { RequestOwnerDto } from '../../http/controllers/dto/owner/request-owner.
 import { IServiceAccountSingUpResponse } from '@/domains/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { ResponseCreatedOwnerDto } from '../../http/controllers/dto/owner/response-created-owner.dto';
-import { AccountRole } from '@/domains/enums/account-role';
+import { AccountRole } from '@/domains/enums/account-role.enum';
 import { CreateOwnerDto } from '../../http/controllers/dto/owner/create-owner.dto';
 import { UUID } from 'crypto';
 import { GetOwnerDto } from '../../http/controllers/dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ssoService = () => Inject('ssoService');
 
 @ApiTags('Owner')
 @Controller('owner')
 export class OwnerMicroserviceController {
     constructor(
         private readonly _ownerService: OwnerService,
-        @accountService() private readonly _ssoServiceClient: ClientProxy,
+        @ssoService() private readonly _ssoServiceClient: ClientProxy,
     ) {}
 
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
     @ApiResponse({ status: 200 })
     @Post('createOwner')
-    async createOwner(@Body() ownerRequest: RequestOwnerDto): Promise<ResponseCreatedOwnerDto> {
+    async createOwner(@Body() ownerRequest: RequestOwnerDto): Promise<CreateOwnerDto> {
         const ownerRequestWithRole = {
             ...ownerRequest,
             role: AccountRole.owner,
@@ -57,9 +56,7 @@ export class OwnerMicroserviceController {
         }
         const createOwnerDto = new CreateOwnerDto(singUpAccountResponse.data);
 
-        await this._ownerService.create(createOwnerDto);
-
-        return new ResponseCreatedOwnerDto({ ...singUpAccountResponse.data });
+        return this._ownerService.create(createOwnerDto);
     }
 
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })

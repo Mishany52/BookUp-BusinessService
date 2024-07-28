@@ -18,15 +18,9 @@ export class OwnerEntity implements IOwner {
     @Column({ type: 'varchar', nullable: false })
     fio: string;
     //? Какой тип должен быть у ссылки и ее пример нужен
-    @Column({
-        type: 'text',
-        nullable: true,
-    })
+    @Column({ type: 'varchar', nullable: true })
     imgUrl: string;
-    @Column({
-        type: 'boolean',
-        default: true,
-    })
+    @Column({ type: 'boolean', default: true })
     active: boolean;
     @OneToMany(() => BusinessEntity, (business) => business.owner)
     businesses: BusinessEntity[];

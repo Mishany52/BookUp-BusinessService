@@ -1,46 +1,31 @@
-import { IServiceAccountSearchByAccountIdResponse } from '@/domains/interface/account/service-account-search-by-account-id-response.interface';
-import { Controller, Get, HttpException, HttpStatus, Inject, Param } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
-import { GetAccountDto } from '../../http/controllers/dto/account/get-account.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UUID } from 'crypto';
+import { BusinessService } from '@/domains/business/business.service';
+import { CreateBusinessDto } from '@/api/http/controllers/dto/business/create-business.dto';
+import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
 
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ssoService = () => Inject('ssoService');
 
 @Controller('business')
 @ApiTags('business')
 export class BusinessMicroserviceController {
-    constructor(@accountService() private readonly _accountServiceClient: ClientProxy) {}
+    constructor(
+        @ssoService() private readonly _accountServiceClient: ClientProxy,
+        private readonly _businessService: BusinessService,
+    ) {}
 
-    @Get(':id')
-    @ApiOkResponse({
-        type: GetAccountDto,
-    })
-    public async getAccountById(@Param('id') id: UUID): Promise<GetAccountDto> {
-        const getAccountResponse: IServiceAccountSearchByAccountIdResponse = await firstValueFrom(
-            this._accountServiceClient.send(
-                { cmd: 'account_search_by_account_id' },
-                { accountId: id },
-            ),
-        );
-
-        if (getAccountResponse.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: getAccountResponse.message,
-                    errors: getAccountResponse.errors,
-                    data: null,
-                },
-                getAccountResponse.status,
-            );
-        }
-        return {
-            message: getAccountResponse.message,
-            data: {
-                account: getAccountResponse.account,
-            },
-            errors: null,
-        };
+    @ApiOperation({ summary: 'Создание бизнеса' })
+    @ApiResponse({ status: 200 })
+    @Post('createBusiness')
+    async createAdmin(@Body() businessRequest: CreateBusinessDto) {
+        return await this._businessService.create(businessRequest);
+    }
+    @Get(':ownerId')
+    public async getByOwnerId(
+        @Param('ownerId') ownerId: UUID,
+    ): Promise<BusinessDomainEntity[] | undefined> {
+        return this._businessService.getByOwnerId(ownerId);
     }
 }
