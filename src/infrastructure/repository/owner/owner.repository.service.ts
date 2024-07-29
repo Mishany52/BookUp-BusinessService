@@ -4,10 +4,9 @@ import { OwnerEntity } from './owner.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOwnerDto } from '@/api/http/controllers/dto/owner/create-owner.dto';
-import { IOwner } from '../../../domains/interface/owner/owner.interface';
-import { OwnerError } from '@/infrastructure/constants/http-messages/errors.constants';
+import { IOwner } from '../../../common/interface/owner/owner.interface';
+import { OwnerError } from '@/common/constants/http-messages/errors.constants';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
-import { UUID } from 'crypto';
 
 @Injectable()
 export class OwnerRepository implements IOwnerRepository {
@@ -30,7 +29,7 @@ export class OwnerRepository implements IOwnerRepository {
         }
     }
 
-    async getById(ownerId: UUID): Promise<IOwner | undefined> {
+    async getById(ownerId: number): Promise<IOwner | undefined> {
         const owner = await this._ownerRepository.findOne({ where: { id: ownerId } });
         return owner;
     }

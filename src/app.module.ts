@@ -5,7 +5,7 @@ import { HttpModule } from '@nestjs/axios';
 import { configuration } from './config/configuration';
 import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
-import { accountServiceProvider } from './domains/account/account-service-persistence.provider';
+import { accountServiceProvider } from './domains/account/account-service.persistence-provider';
 import { AdministratorModule } from './domains/administrator/administrator.module';
 
 @Module({

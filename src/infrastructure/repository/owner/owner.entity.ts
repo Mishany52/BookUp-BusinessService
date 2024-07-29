@@ -1,13 +1,13 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IOwner } from '../../../domains/interface/owner/owner.interface';
+import { IOwner } from '../../../common/interface/owner/owner.interface';
 import { BusinessEntity } from '../business/business.entity';
 import { MinLength } from 'class-validator';
 import { UUID } from 'crypto';
 
 @Entity({ name: 'owners' })
 export class OwnerEntity implements IOwner {
-    @PrimaryGeneratedColumn('uuid')
-    id: UUID;
+    @PrimaryGeneratedColumn()
+    id: number;
     @Column({ type: 'uuid', nullable: false })
     accountId: UUID;
     @Column({ type: 'varchar', unique: true, nullable: false })

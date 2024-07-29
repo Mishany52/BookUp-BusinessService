@@ -3,12 +3,11 @@ import { IBusinessRepository } from '@/infrastructure/repository/business/busine
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { OwnerService } from '../owner/owner.service';
 import { BusinessDomainEntity } from './business.domain-entity';
-import { BusinessError } from '@/infrastructure/constants/http-messages/errors.constants';
-import { objectKeysInString } from '@/utils/object-keys-in-string';
-import { UUID } from 'crypto';
-import { IBusinessDomainEntity } from '../interface/business/business.domain-entity.interface';
+import { BusinessError } from '@/common/constants/http-messages/errors.constants';
+import { IBusinessDomainEntity } from '../../common/interface/business/business.domain-entity.interface';
+import { Providers } from '../../common/constants/providers.constants';
 
-const businessRepo = () => Inject('businessRepo');
+const businessRepo = () => Inject(Providers.BUSINESS_REPO);
 @Injectable()
 export class BusinessService {
     constructor(
@@ -23,10 +22,8 @@ export class BusinessService {
         };
         const business = await this._businessRepository.getByAnyProperties(requiredUniqueFields);
         if (business) {
-            const fieldsAsString = await objectKeysInString(requiredUniqueFields);
-
             throw new HttpException(
-                `${BusinessError.BUSINESS_ALREADY_CREATED} with these fields: ${fieldsAsString}`,
+                `${BusinessError.BUSINESS_ALREADY_CREATED} with these fields: ${JSON.stringify(requiredUniqueFields)}`,
                 HttpStatus.BAD_REQUEST,
             );
         }
@@ -35,11 +32,11 @@ export class BusinessService {
             const businessDomainEntity = new BusinessDomainEntity({ ...businessDto, owner });
             return this._businessRepository.create(businessDomainEntity);
         } catch (error) {
-            throw new HttpException("Business hasn't been created", HttpStatus.BAD_REQUEST);
+            throw new HttpException(BusinessError.BUSINESS_NOT_CREATED, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async getByOwnerId(ownerId: UUID): Promise<IBusinessDomainEntity[]> {
+    async getByOwnerId(ownerId: number): Promise<IBusinessDomainEntity[]> {
         try {
             return this._businessRepository.getByOwnerId(ownerId);
         } catch (e) {

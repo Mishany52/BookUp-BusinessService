@@ -1,7 +1,7 @@
-import { IAdministrator } from '../interface/administrator/administrator.interface';
-import { IBusinessDomainEntity } from '../interface/business/business.domain-entity.interface';
-import { IOwner } from '../interface/owner/owner.interface';
-import { IWorkTime } from '../interface/time/workTime.interface';
+import { IAdministratorDomainEntity } from '../../common/interface/administrator/administrator.interface';
+import { IBusinessDomainEntity } from '../../common/interface/business/business.domain-entity.interface';
+import { IOwner } from '../../common/interface/owner/owner.interface';
+import { IWorkTime } from '../../common/interface/time/workTime.interface';
 
 export class BusinessDomainEntity implements IBusinessDomainEntity {
     id: number;
@@ -13,7 +13,7 @@ export class BusinessDomainEntity implements IBusinessDomainEntity {
     siteUrl: string;
     logoUrl: string;
     owner: IOwner;
-    administrator: IAdministrator[];
+    administrators: IAdministratorDomainEntity[];
 
     constructor(model: Partial<BusinessDomainEntity>) {
         if (model.id) {
@@ -27,6 +27,6 @@ export class BusinessDomainEntity implements IBusinessDomainEntity {
         this.siteUrl = model.siteUrl || null;
         this.logoUrl = model.logoUrl || null;
         this.owner = model.owner || null;
-        this.administrator = model.administrator || null;
+        this.administrators = model.administrators || null;
     }
 }

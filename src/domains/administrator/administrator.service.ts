@@ -2,16 +2,18 @@ import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-admini
 import { IAdministratorRepository } from '@/infrastructure/repository/administrator/administrator.repository.interface';
 import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AccountRole } from '../enums/account-role.enum';
+import { AccountRole } from '../../common/enums/account-role.enum';
 import { firstValueFrom } from 'rxjs';
-import { ISsoServiceCheckByEmailPhoneResponse } from '../interface/account/service-account-get-by-email-and-phone.interface';
+import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
 import { CreateAdminDto } from '@/api/http/controllers/dto/administrator/create-admin.dto';
-import { IServiceAccountUpdateResponse } from '../interface/account/service-account-update-by-id.interface';
-import { AdminError } from '@/infrastructure/constants/http-messages/errors.constants';
-import { IServiceAccountSingUpResponse } from '../interface/account/service-account-sing-up.interface';
+import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
+import { AdminError } from '@/common/constants/http-messages/errors.constants';
+import { IServiceAccountSingUpResponse } from '../../common/interface/account/service-account-sing-up.interface';
+import { Providers } from '@/common/constants/providers.constants';
+import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
 
-const adminRepo = () => Inject('adminRepo');
-const ssoService = () => Inject('ssoService');
+const adminRepo = () => Inject(Providers.ADMIN_REPO);
+const ssoService = () => Inject(Providers.SSO);
 
 @Injectable()
 export class AdministratorService {
@@ -27,7 +29,7 @@ export class AdministratorService {
         };
         const checkAccount: ISsoServiceCheckByEmailPhoneResponse = await firstValueFrom(
             this._ssoServiceClient.send(
-                { cmd: 'check_account_by_email_and_phone' },
+                { cmd: SsoCmd.CHECK_ACCOUNT_BY_EMAIL_AND_PHONE },
                 { email: adminRequest.email, phone: adminRequest.phone },
             ),
         );
@@ -46,7 +48,7 @@ export class AdministratorService {
             const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
                 this._ssoServiceClient.send(
                     {
-                        cmd: 'update_account_by_id',
+                        cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
                     },
                     { id: account.id, role: AccountRole.admin },
                 ),
@@ -74,7 +76,7 @@ export class AdministratorService {
 
         if (!checkAccount.data.emailTaken && !checkAccount.data.phoneTaken) {
             const singUpAccountResponse: IServiceAccountSingUpResponse = await firstValueFrom(
-                this._ssoServiceClient.send({ cmd: 'account_sing_up' }, adminRequest),
+                this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, adminRequest),
             );
 
             if (singUpAccountResponse.status !== HttpStatus.OK) {

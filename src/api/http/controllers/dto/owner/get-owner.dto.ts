@@ -1,5 +1,5 @@
-import { IBusiness } from '@/domains/interface/business/business.interface';
-import { IOwner } from '@/domains/interface/owner/owner.interface';
+import { IBusiness } from '@/common/interface/business/business.interface';
+import { IOwner } from '@/common/interface/owner/owner.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsUrl, IsUUID } from 'class-validator';
 import { UUID } from 'crypto';
@@ -7,9 +7,9 @@ import { UUID } from 'crypto';
 export class GetOwnerDto {
     @IsUUID()
     @ApiProperty({
-        example: '6b75fe4f-b5a5-4bda-95a2-b56ea489d608',
+        example: '1',
     })
-    id: UUID;
+    id: number;
     @IsUUID()
     @ApiProperty({
         example: '6b75fe4f-b5a5-4bda-95a2-b56ea489d608',

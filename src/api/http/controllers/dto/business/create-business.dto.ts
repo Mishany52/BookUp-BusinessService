@@ -1,16 +1,7 @@
-import { WorkTimeDto } from '@/domains/dto/time/work-time.dto';
+import { WorkTimeDto } from '@/common/dto/time/work-time.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-    IsNumber,
-    IsObject,
-    IsOptional,
-    IsString,
-    IsUrl,
-    IsUUID,
-    ValidateNested,
-} from 'class-validator';
-import { UUID } from 'crypto';
+import { IsNumber, IsObject, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
 
 export class CreateBusinessDto {
     @ApiProperty({
@@ -80,6 +71,6 @@ export class CreateBusinessDto {
         description: 'The UUID of the owner',
         example: '123e4567-e89b-12d3-a456-426614174000',
     })
-    @IsUUID()
-    ownerId: UUID;
+    @IsNumber()
+    ownerId: number;
 }

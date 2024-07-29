@@ -1,15 +1,23 @@
-import { IEmployee } from '@/domains/interface/employee/employee.interface';
-import { IsBoolean, IsEmail, IsPhoneNumber, IsString, IsUrl, IsUUID, Min } from 'class-validator';
+import { IEmployee } from '@/common/interface/employee/employee.interface';
+import {
+    IsBoolean,
+    IsEmail,
+    IsNumber,
+    IsPhoneNumber,
+    IsString,
+    IsUrl,
+    IsUUID,
+    Min,
+} from 'class-validator';
 import { UUID } from 'crypto';
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PointEntity } from '../point/point.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BusinessEntity } from '../business/business.entity';
 
 @Entity({ name: 'employees' })
 export class EmployeeEntity implements IEmployee {
-    @PrimaryGeneratedColumn('uuid')
-    @IsUUID()
-    id: UUID;
+    @PrimaryGeneratedColumn()
+    @IsNumber()
+    id: number;
 
     @Column({ type: 'uuid', nullable: false })
     @IsUUID()
@@ -35,9 +43,6 @@ export class EmployeeEntity implements IEmployee {
     @Column({ type: 'boolean', default: true })
     @IsBoolean()
     active: boolean;
-
-    @ManyToMany(() => PointEntity, (point) => point.employees)
-    points: PointEntity[];
 
     @ManyToOne(() => BusinessEntity, (business) => business.employees)
     business: BusinessEntity;

@@ -1,7 +1,4 @@
-import {
-    MAX_LENGTH_PASSWORD,
-    MIN_LENGTH_PASSWORD,
-} from '@/infrastructure/constants/auth.constants';
+import { MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD } from '@/common/constants/auth.constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsUUID, Length } from 'class-validator';
 import { UUID } from 'crypto';

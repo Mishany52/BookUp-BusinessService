@@ -1,4 +1,4 @@
-import { IAdministrator } from '@/domains/interface/administrator/administrator.interface';
+import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
 import { IsBoolean, IsEmail, IsPhoneNumber, IsUrl, IsUUID, Min } from 'class-validator';
 import { UUID } from 'crypto';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -6,10 +6,9 @@ import { BusinessEntity } from '../business/business.entity';
 import { PointEntity } from '../point/point.entity';
 
 @Entity({ name: 'administrators' })
-export class AdministratorEntity implements IAdministrator {
-    @PrimaryGeneratedColumn('uuid')
-    @IsUUID()
-    id: UUID;
+export class AdministratorEntity implements IAdministratorDomainEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column({ type: 'uuid', nullable: false })
     @IsUUID()
@@ -36,7 +35,7 @@ export class AdministratorEntity implements IAdministrator {
     @IsUrl()
     imgUrl: string;
 
-    @ManyToOne(() => BusinessEntity, (business) => business.administrator)
+    @ManyToOne(() => BusinessEntity, (business) => business.administrators)
     business: BusinessEntity;
 
     @OneToMany(() => PointEntity, (point) => point.business)

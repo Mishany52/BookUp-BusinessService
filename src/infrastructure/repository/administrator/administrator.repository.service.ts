@@ -3,9 +3,8 @@ import { IAdministratorRepository } from './administrator.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AdministratorEntity } from './administrator.entity';
-import { IAdministrator } from '@/domains/interface/administrator/administrator.interface';
-import { UUID } from 'crypto';
-import { AdminError } from '@/infrastructure/constants/http-messages/errors.constants';
+import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
+import { AdminError } from '@/common/constants/http-messages/errors.constants';
 import { UpdateAdminDto } from '@/api/http/controllers/dto/administrator/update-admin.dto';
 import { CreateAdminDto } from '@/api/http/controllers/dto/administrator/create-admin.dto';
 
@@ -15,18 +14,18 @@ export class AdministratorRepository implements IAdministratorRepository {
         @InjectRepository(AdministratorEntity)
         private readonly _adminRepository: Repository<AdministratorEntity>,
     ) {}
-    async create(createFields: CreateAdminDto): Promise<IAdministrator> {
+    async create(createFields: CreateAdminDto): Promise<IAdministratorDomainEntity> {
         try {
             const admin = this._adminRepository.create(createFields);
             await this._adminRepository.save(admin);
             //!Потом сменить на mapper
-            const createdAdmin: IAdministrator = { ...admin };
+            const createdAdmin: IAdministratorDomainEntity = { ...admin };
             return createdAdmin;
         } catch (error) {
             throw new Error(AdminError.ADMIN_CREATION_FAILED);
         }
     }
-    async update(adminUpdate: UpdateAdminDto): Promise<IAdministrator> {
+    async update(adminUpdate: UpdateAdminDto): Promise<IAdministratorDomainEntity> {
         try {
             const admin = await this._adminRepository.save(adminUpdate);
             return admin;
@@ -35,7 +34,7 @@ export class AdministratorRepository implements IAdministratorRepository {
         }
     }
 
-    async getById(adminId: UUID): Promise<IAdministrator | undefined> {
+    async getById(adminId: number): Promise<IAdministratorDomainEntity | undefined> {
         try {
             const admin = await this._adminRepository.findOne({ where: { id: adminId } });
             return admin;

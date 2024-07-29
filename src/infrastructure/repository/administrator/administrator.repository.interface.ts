@@ -1,8 +1,7 @@
-import { IAdministrator } from '@/domains/interface/administrator/administrator.interface';
-import { UUID } from 'crypto';
+import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
 
 export interface IAdministratorRepository {
-    create(createFields: Partial<IAdministrator>): Promise<IAdministrator>;
-    update(adminUpdate: Partial<IAdministrator>): Promise<IAdministrator>;
-    getById(adminId: UUID): Promise<IAdministrator>;
+    create(createFields: Partial<IAdministratorDomainEntity>): Promise<IAdministratorDomainEntity>;
+    update(adminUpdate: Partial<IAdministratorDomainEntity>): Promise<IAdministratorDomainEntity>;
+    getById(adminId: number): Promise<IAdministratorDomainEntity>;
 }

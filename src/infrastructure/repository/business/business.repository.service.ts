@@ -3,10 +3,8 @@ import { IBusinessRepository } from './business.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessEntity } from './business.entity';
 import { Repository } from 'typeorm';
-import { IBusiness } from '@/domains/interface/business/business.interface';
-import { IBusinessDomainEntity } from '@/domains/interface/business/business.domain-entity.interface';
-import { UUID } from 'crypto';
-import { BusinessError } from '@/infrastructure/constants/http-messages/errors.constants';
+import { IBusiness } from '@/common/interface/business/business.interface';
+import { IBusinessDomainEntity } from '@/common/interface/business/business.domain-entity.interface';
 
 @Injectable()
 export class BusinessRepository implements IBusinessRepository {
@@ -26,7 +24,7 @@ export class BusinessRepository implements IBusinessRepository {
         return this._businessRepository.findOne({ where: { ...businessDto } });
     }
 
-    async getByOwnerId(ownerId: UUID): Promise<IBusinessDomainEntity[] | undefined> {
+    async getByOwnerId(ownerId: number): Promise<IBusinessDomainEntity[] | undefined> {
         const business = await this._businessRepository.find({
             where: { owner: { id: ownerId } },
             relations: ['owner'],
