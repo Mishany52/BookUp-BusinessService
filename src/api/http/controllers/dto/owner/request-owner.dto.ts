@@ -1,9 +1,6 @@
+import { MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD } from '@/common/constants/auth.constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, Length } from 'class-validator';
-import {
-    MAX_LENGTH_PASSWORD,
-    MIN_LENGTH_PASSWORD,
-} from '../../../../../infrastructure/constants/auth.constants';
 
 export class RequestOwnerDto {
     @ApiProperty({
@@ -12,12 +9,14 @@ export class RequestOwnerDto {
     })
     @IsPhoneNumber('RU')
     readonly phone: string;
+
     @ApiProperty({
         uniqueItems: true,
         example: 'test@gmail.com',
     })
     @IsEmail()
     readonly email: string;
+
     @ApiProperty({
         minLength: MIN_LENGTH_PASSWORD,
         example: 'testTest',

@@ -1,21 +1,21 @@
 import { CreateOwnerDto } from '@/api/http/controllers/dto/owner/create-owner.dto';
 import { GetOwnerDto } from '@/api/http/controllers/dto/owner/get-owner.dto';
-import {
-    OWNER_NOT_FOUND_BY_ID,
-    OWNER_NOT_UPDATE,
-} from '@/infrastructure/constants/http-messages/errors.constants';
+import { OwnerError } from '@/common/constants/http-messages/errors.constants';
 import { IOwnerRepository } from '@/infrastructure/repository/owner/owner.repository.interface';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { UUID } from 'crypto';
-import { IServiceAccountDeactivateResponse } from '../interface/account/service-account-deactivate-by-id.interface';
+import { IServiceAccountDeactivateResponse } from '../../common/interface/account/service-account-deactivate-by-id.interface';
 import { firstValueFrom } from 'rxjs';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
-import { IServiceAccountUpdateResponse } from '../interface/account/service-account-update-by-id.interface';
-import { IOwner } from '../interface/owner/owner.interface';
+import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
+import { IOwner } from '../../common/interface/owner/owner.interface';
+import { Providers } from '@/common/constants/providers.constants';
+import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
+import { IAccount } from '@/common/interface/account/account.interface';
+import { UUID } from 'crypto';
 
-const ownerRepo = () => Inject('ownerRepo');
-const accountService = () => Inject('ACCOUNT_SERVICE');
+const ownerRepo = () => Inject(Providers.OWNER_REPO);
+const accountService = () => Inject(Providers.SSO);
 
 @Injectable()
 export class OwnerService {
@@ -29,42 +29,26 @@ export class OwnerService {
         const getOwnerDto = new GetOwnerDto(newOwner);
         return getOwnerDto;
     }
-    async update(ownerId: UUID, updateOwnerDto: Partial<UpdateOwnerDto>): Promise<GetOwnerDto> {
+    async update(ownerId: number, updateOwnerDto: Partial<UpdateOwnerDto>): Promise<GetOwnerDto> {
         const owner = await this.getOwnerById(ownerId);
-        updateOwnerDto = await this.getUpdateFields(owner, updateOwnerDto);
-        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
-            this._ssoServiceClient.send(
-                {
-                    cmd: 'update_account_by_id',
-                },
-                { id: owner.accountId, ...updateOwnerDto },
-            ),
-        );
-        if (accountUpdateResponse.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: accountUpdateResponse.message,
-                    errors: accountUpdateResponse.errors,
-                    data: null,
-                },
-                accountUpdateResponse.status,
-            );
-        }
+        updateOwnerDto = await this._getUpdateFields(owner, updateOwnerDto);
+        await this._updateAccount(owner.accountId, updateOwnerDto);
         Object.assign(owner, updateOwnerDto);
-        const ownerUpdate = await this._ownerRepository.update(owner);
-        if (!ownerUpdate) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+        try {
+            const ownerUpdate = await this._ownerRepository.update(owner);
+            return new GetOwnerDto(ownerUpdate);
+        } catch (e) {
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new GetOwnerDto(owner);
     }
-    async deactivate(ownerId: UUID): Promise<GetOwnerDto> {
+    async deactivate(ownerId: number): Promise<GetOwnerDto> {
         const owner = await this.getOwnerById(ownerId);
 
         Object.assign(owner, { active: false });
         const accountDeactivatedResponse: IServiceAccountDeactivateResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
-                    cmd: 'deactivate_account_by_id',
+                    cmd: SsoCmd.DEACTIVATE_ACCOUNT_BY_ID,
                 },
                 owner.accountId,
             ),
@@ -81,20 +65,20 @@ export class OwnerService {
         }
         const ownerUpdate = await this._ownerRepository.update(owner);
         if (!ownerUpdate) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
         return new GetOwnerDto(owner);
     }
 
-    async getOwnerById(ownerId: UUID): Promise<GetOwnerDto> {
+    async getOwnerById(ownerId: number): Promise<GetOwnerDto> {
         const owner = await this._ownerRepository.getById(ownerId);
         if (!owner) {
-            throw new HttpException(OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
+            throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
         return new GetOwnerDto(owner);
     }
 
-    async getUpdateFields(
+    private async _getUpdateFields(
         owner: GetOwnerDto,
         updateOwnerDto: UpdateOwnerDto,
     ): Promise<Partial<IOwner>> {
@@ -105,7 +89,7 @@ export class OwnerService {
             Object.keys(updateOwnerDto).length === 0 ||
             !Object.keys(updateOwnerDto).some((key) => updateOwnerDto[key] !== undefined)
         ) {
-            throw new HttpException(OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
 
         //Собираем объект из полей, которые имеют новые данные для обновления
@@ -118,5 +102,30 @@ export class OwnerService {
             }
         }
         return updatedFields;
+    }
+
+    private async _updateAccount(
+        accountId: UUID,
+        updateFields: Partial<IAccount>,
+    ): Promise<IAccount> {
+        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
+            this._ssoServiceClient.send(
+                {
+                    cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
+                },
+                { id: accountId, ...updateFields },
+            ),
+        );
+        if (accountUpdateResponse.status !== HttpStatus.OK) {
+            throw new HttpException(
+                {
+                    message: accountUpdateResponse.message,
+                    errors: accountUpdateResponse.errors,
+                    data: null,
+                },
+                accountUpdateResponse.status,
+            );
+        }
+        return accountUpdateResponse.data;
     }
 }
