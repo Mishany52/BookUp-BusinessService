@@ -35,13 +35,13 @@ export class CreateBusinessDto {
     @ApiProperty({
         description: 'The working time of the business in JSON format',
         example: {
-            понедельник: { start: '10:00', end: '20:00' },
-            вторник: { start: '10:00', end: '20:00' },
-            среда: { start: '10:00', end: '20:00' },
-            четверг: { start: '10:00', end: '20:00' },
-            пятница: { start: '10:00', end: '20:00' },
+            monday: { start: '10:00', end: '20:00' },
+            tuesday: { start: '10:00', end: '20:00' },
+            wednesday: { start: '10:00', end: '20:00' },
+            thursday: { start: '10:00', end: '20:00' },
+            friday: { start: '10:00', end: '20:00' },
+            saturday: { start: '10:00', end: '20:00' },
             суббота: { start: '10:00', end: '20:00' },
-            воскресенье: { start: '10:00', end: '20:00' },
         },
     })
     @IsObject()

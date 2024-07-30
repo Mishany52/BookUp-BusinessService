@@ -11,6 +11,8 @@ import { IServiceAccountUpdateResponse } from '../../common/interface/account/se
 import { IOwner } from '../../common/interface/owner/owner.interface';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
+import { IAccount } from '@/common/interface/account/account.interface';
+import { UUID } from 'crypto';
 
 const ownerRepo = () => Inject(Providers.OWNER_REPO);
 const accountService = () => Inject(Providers.SSO);
@@ -29,31 +31,15 @@ export class OwnerService {
     }
     async update(ownerId: number, updateOwnerDto: Partial<UpdateOwnerDto>): Promise<GetOwnerDto> {
         const owner = await this.getOwnerById(ownerId);
-        updateOwnerDto = await this.getUpdateFields(owner, updateOwnerDto);
-        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
-            this._ssoServiceClient.send(
-                {
-                    cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
-                },
-                { id: owner.accountId, ...updateOwnerDto },
-            ),
-        );
-        if (accountUpdateResponse.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: accountUpdateResponse.message,
-                    errors: accountUpdateResponse.errors,
-                    data: null,
-                },
-                accountUpdateResponse.status,
-            );
-        }
+        updateOwnerDto = await this._getUpdateFields(owner, updateOwnerDto);
+        await this._updateAccount(owner.accountId, updateOwnerDto);
         Object.assign(owner, updateOwnerDto);
-        const ownerUpdate = await this._ownerRepository.update(owner);
-        if (!ownerUpdate) {
-            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+        try {
+            const ownerUpdate = await this._ownerRepository.update(owner);
+            return new GetOwnerDto(ownerUpdate);
+        } catch (e) {
+            throw new HttpException(OwnerError.OWNER_NOT_UPDATE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new GetOwnerDto(owner);
     }
     async deactivate(ownerId: number): Promise<GetOwnerDto> {
         const owner = await this.getOwnerById(ownerId);
@@ -92,7 +78,7 @@ export class OwnerService {
         return new GetOwnerDto(owner);
     }
 
-    async getUpdateFields(
+    private async _getUpdateFields(
         owner: GetOwnerDto,
         updateOwnerDto: UpdateOwnerDto,
     ): Promise<Partial<IOwner>> {
@@ -116,5 +102,30 @@ export class OwnerService {
             }
         }
         return updatedFields;
+    }
+
+    private async _updateAccount(
+        accountId: UUID,
+        updateFields: Partial<IAccount>,
+    ): Promise<IAccount> {
+        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
+            this._ssoServiceClient.send(
+                {
+                    cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
+                },
+                { id: accountId, ...updateFields },
+            ),
+        );
+        if (accountUpdateResponse.status !== HttpStatus.OK) {
+            throw new HttpException(
+                {
+                    message: accountUpdateResponse.message,
+                    errors: accountUpdateResponse.errors,
+                    data: null,
+                },
+                accountUpdateResponse.status,
+            );
+        }
+        return accountUpdateResponse.data;
     }
 }

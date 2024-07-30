@@ -1,7 +1,7 @@
 import { ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DayWorkTimeDto } from './day-work-time.dto';
-import { IWorkTime } from '@/common/interface/time/workTime.interface';
+import { IWorkTime } from '@/common/interface/time/work-time.interface';
 
 export class WorkTimeDto implements IWorkTime {
     @ValidateNested()

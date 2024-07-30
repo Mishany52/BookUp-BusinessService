@@ -6,5 +6,5 @@ export interface IAccount {
     email: string;
     phone: string;
     fio: string;
-    imgUrl: string;
+    imgUrl?: string;
 }

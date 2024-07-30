@@ -9,12 +9,14 @@ export class RequestOwnerDto {
     })
     @IsPhoneNumber('RU')
     readonly phone: string;
+
     @ApiProperty({
         uniqueItems: true,
         example: 'test@gmail.com',
     })
     @IsEmail()
     readonly email: string;
+
     @ApiProperty({
         minLength: MIN_LENGTH_PASSWORD,
         example: 'testTest',

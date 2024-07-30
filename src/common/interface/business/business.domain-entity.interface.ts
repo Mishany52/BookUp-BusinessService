@@ -1,6 +1,6 @@
 import { IOwner } from '../owner/owner.interface';
 import { IAdministratorDomainEntity } from '../administrator/administrator.interface';
-import { IWorkTime } from '../time/workTime.interface';
+import { IWorkTime } from '../time/work-time.interface';
 
 export interface IBusinessDomainEntity {
     id: number;

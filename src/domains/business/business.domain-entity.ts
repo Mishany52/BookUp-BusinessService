@@ -1,7 +1,7 @@
 import { IAdministratorDomainEntity } from '../../common/interface/administrator/administrator.interface';
 import { IBusinessDomainEntity } from '../../common/interface/business/business.domain-entity.interface';
 import { IOwner } from '../../common/interface/owner/owner.interface';
-import { IWorkTime } from '../../common/interface/time/workTime.interface';
+import { IWorkTime } from '../../common/interface/time/work-time.interface';
 
 export class BusinessDomainEntity implements IBusinessDomainEntity {
     id: number;

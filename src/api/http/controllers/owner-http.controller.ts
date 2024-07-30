@@ -6,7 +6,6 @@ import {
     HttpStatus,
     Inject,
     Param,
-    ParseUUIDPipe,
     Patch,
     Post,
 } from '@nestjs/common';
@@ -63,7 +62,7 @@ export class OwnerHttpController {
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
     @ApiResponse({ status: 200 })
     @Patch('deactivateOwner/:id')
-    async delete(@Param('id', ParseUUIDPipe) ownerId: number): Promise<GetOwnerDto> {
+    async delete(@Param('id') ownerId: number): Promise<GetOwnerDto> {
         return this._ownerService.deactivate(ownerId);
     }
 
