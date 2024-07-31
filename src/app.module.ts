@@ -1,19 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
-import { configuration } from './config/configuration';
 import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
 import { accountServiceProvider } from './domains/sso/sso-service.persistence-provider';
 import { AdministratorModule } from './domains/administrator/administrator.module';
+import { TypedConfigModule } from './config/typed-config.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
-            load: [configuration],
-            isGlobal: true,
-        }),
+        TypedConfigModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (config: ConfigService) => ({
                 ...config.get<TypeOrmModuleAsyncOptions>('db'),
