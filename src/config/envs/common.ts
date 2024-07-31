@@ -11,12 +11,13 @@ export const config = {
 
     ssoServiceOptions: {
         options: {
-            port: process.env.SSO_SERVICE_PORT,
-            host: process.env.SSO_SERVICE_HOST,
+            port: process.env.SSO_MICROSERVICE_PORT,
+            host: process.env.SSO_MICROSERVICE_HOST,
         },
         transport: Transport.TCP,
     },
     apiPort: process.env.API_PORT_BUSINESS,
-    frontUri: process.env.FRONT_URI,
-    frontPort: process.env.FRONT_PORT,
+    apiName: process.env.API_NAME,
+
+    frontendBusinessUrl: process.env.FRONTEND_BUSINESS_URL,
 };
