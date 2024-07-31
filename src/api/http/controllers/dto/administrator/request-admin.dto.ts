@@ -32,8 +32,8 @@ export class RequestAdminDto {
     @IsString()
     readonly fio: string;
     @IsOptional()
-    @IsUUID()
-    readonly businessId: UUID;
+    readonly businessId: number;
+
     @IsOptional()
     @IsUUID()
     readonly pointIds: UUID[];

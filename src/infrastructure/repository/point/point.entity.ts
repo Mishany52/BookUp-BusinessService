@@ -3,8 +3,8 @@ import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 't
 import { BusinessEntity } from '../business/business.entity';
 import { AdministratorEntity } from '../administrator/administrator.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
-import { IWorkTime } from '@/common/interface/time/workTime.interface';
 import { TagEntity } from '../tag/tag.entity';
+import { IWorkTime } from '@/common/interface/time/work-time.interface';
 
 @Entity({ name: 'points' })
 export class PointEntity implements IPoint {
