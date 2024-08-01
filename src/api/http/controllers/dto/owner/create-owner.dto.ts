@@ -1,8 +1,8 @@
 import { IOwner } from '@/common/interface/owner/owner.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, IsUUID } from 'class-validator';
 import { UUID } from 'crypto';
-import { IAccount } from '@/common/interface/account/account.interface';
 
 export class CreateOwnerDto implements IOwner {
     @ApiProperty({

@@ -1,7 +1,8 @@
-import { CheckAccountDto } from '../../dto/account/check-account.dto';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export interface ISsoServiceCheckByEmailPhoneResponse {
+import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
+
+export interface ISSOServiceCheckByEmailPhoneResponse {
     status: number;
     message: string;
     data: CheckAccountDto | null;

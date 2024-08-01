@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { APILogger } from './infrastructure/logger/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { TypedConfigService } from './config/typed-config.service';
+import { middleware } from './app.midleware';
 
 async function bootstrap() {
     const logger = new APILogger();
@@ -18,10 +19,13 @@ async function bootstrap() {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
+    middleware(app);
+
     const config = new DocumentBuilder()
-        .setTitle('Business Service')
-        .setDescription('The Business service')
+        .setTitle('Business')
+        .setDescription('The Business Api')
         .build();
+
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
