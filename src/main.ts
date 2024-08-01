@@ -22,7 +22,6 @@ async function bootstrap() {
     });
     middleware(app);
 
-    
     const config = new DocumentBuilder()
         .setTitle('Business')
         .setDescription('The Business Api')
