@@ -6,9 +6,8 @@ import { AccountRole } from '../../common/enums/account-role.enum';
 import { firstValueFrom } from 'rxjs';
 import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
 import { CreateAdminDto } from '@/api/http/controllers/dto/administrator/create-admin.dto';
-import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
 import { AdminError } from '@/common/constants/http-messages/errors.constants';
-import { IServiceAccountSingUpResponse } from '../../common/interface/account/service-account-sing-up.interface';
+import { ISSOServiceSingUpResponse } from '../../common/interface/account/sso-service-sign-up-response';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
 import { UUID } from 'crypto';
@@ -48,7 +47,7 @@ export class AdministratorService {
         throw new HttpException('Unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private async _updateAccountRole(accountId: UUID): Promise<IServiceAccountUpdateResponse> {
+    private async _updateAccountRole(accountId: UUID): Promise<ISSOServiceSingUpResponse> {
         const responseUpdate = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
