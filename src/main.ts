@@ -5,21 +5,23 @@ import { SSOLogger } from './infrastructure/logger/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
+import { middleware } from './app.midleware';
 
 async function bootstrap() {
     const logger = new SSOLogger();
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
     const PORT = configService.get('apiPort') || 3000;
 
     app.use(cookieParser());
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-
     app.enableCors({
         origin: `${configService.get('frontUri')}:${configService.get('frontPort')}`,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
+    middleware(app);
+
     
     const config = new DocumentBuilder()
         .setTitle('Business')
