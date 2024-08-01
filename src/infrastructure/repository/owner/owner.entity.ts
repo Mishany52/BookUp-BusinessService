@@ -1,13 +1,13 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IOwner } from '../../../domains/interface/owner/owner.interface';
+import { IOwner } from '../../../common/interface/owner/owner.interface';
 import { BusinessEntity } from '../business/business.entity';
 import { MinLength } from 'class-validator';
 import { UUID } from 'crypto';
 
 @Entity({ name: 'owners' })
 export class OwnerEntity implements IOwner {
-    @PrimaryGeneratedColumn('uuid')
-    id: UUID;
+    @PrimaryGeneratedColumn()
+    id: number;
     @Column({ type: 'uuid', nullable: false })
     accountId: UUID;
     @Column({ type: 'varchar', unique: true, nullable: false })
@@ -18,15 +18,9 @@ export class OwnerEntity implements IOwner {
     @Column({ type: 'varchar', nullable: false })
     fio: string;
     //? Какой тип должен быть у ссылки и ее пример нужен
-    @Column({
-        type: 'text',
-        nullable: true,
-    })
+    @Column({ type: 'varchar', nullable: true })
     imgUrl: string;
-    @Column({
-        type: 'boolean',
-        default: true,
-    })
+    @Column({ type: 'boolean', default: true })
     active: boolean;
     @OneToMany(() => BusinessEntity, (business) => business.owner)
     businesses: BusinessEntity[];

@@ -1,19 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
-import { BusinessMicroserviceController } from './api/microservice/controllers/business-microservice.controller';
-import { configuration } from './config/configuration';
 import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
-import { ssoServiceProvider } from './domains/account/sso-service-persistence.provider';
+import { AdministratorModule } from './domains/administrator/administrator.module';
+import { TypedConfigModule } from './config/typed-config.module';
+import { ssoServiceProvider } from './domains/sso/sso-service.persistence-provider';
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
-            load: [configuration],
-            isGlobal: true,
-        }),
+        TypedConfigModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (config: ConfigService) => ({
                 ...config.get<TypeOrmModuleAsyncOptions>('db'),
@@ -23,8 +20,8 @@ import { ssoServiceProvider } from './domains/account/sso-service-persistence.pr
         HttpModule,
         BusinessModule,
         OwnerModule,
+        AdministratorModule,
     ],
-    controllers: [BusinessMicroserviceController],
     providers: [ssoServiceProvider],
 })
 export class AppModule {}

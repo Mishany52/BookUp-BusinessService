@@ -1,22 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { SSOLogger } from './infrastructure/logger/logger';
+import { APILogger } from './infrastructure/logger/logger';
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as cookieParser from 'cookie-parser';
+import { TypedConfigService } from './config/typed-config.service';
 import { middleware } from './app.midleware';
 
 async function bootstrap() {
-    const logger = new SSOLogger();
+    const logger = new APILogger();
     const app = await NestFactory.create(AppModule);
-    const configService = app.get(ConfigService);
+    const configService = app.get(TypedConfigService);
     const PORT = configService.get('apiPort') || 3000;
-
-    app.use(cookieParser());
-    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+    app.useGlobalPipes(
+        new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
+    );
     app.enableCors({
-        origin: `${configService.get('frontUri')}:${configService.get('frontPort')}`,
+        origin: `${configService.get('frontendBusinessUrl')}`,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
@@ -31,7 +30,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     await app.listen(PORT);
-    logger.verbose(`Business service start on port: ${PORT}`);
+    logger.verbose(`${configService.get('apiName')} service start on port: ${PORT}`);
 }
 
 bootstrap();

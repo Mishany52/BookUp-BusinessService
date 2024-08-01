@@ -5,6 +5,6 @@ import { IsOptional, IsUrl } from 'class-validator';
 export class UpdateOwnerDto extends PartialType(OmitType(CreateOwnerDto, ['accountId'] as const)) {
     @IsOptional()
     @IsUrl()
-    @ApiProperty({ example: 'Пока не знаем 2' })
+    @ApiProperty({ example: 'https://www.mybusiness.com' })
     imgUrl?: string;
 }
