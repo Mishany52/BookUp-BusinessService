@@ -1,4 +1,4 @@
-import { IAccount } from '../../interface/account/account.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 
 export class CheckAccountDto {
     account: IAccount | null;

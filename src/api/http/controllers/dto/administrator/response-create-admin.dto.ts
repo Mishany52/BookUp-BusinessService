@@ -1,4 +1,4 @@
-import { IAccount } from '@/common/interface/account/account.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponseCreatedAdminDto {

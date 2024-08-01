@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IOwner } from '@/common/interface/owner/owner.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { IOwner } from '../../../../../domains/interface/owner/owner.interface';
 
 export class SSOSingUpDto {
     @ApiProperty({ example: 'task_create_success' })

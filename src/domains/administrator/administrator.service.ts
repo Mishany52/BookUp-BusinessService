@@ -4,15 +4,15 @@ import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AccountRole } from '../../common/enums/account-role.enum';
 import { firstValueFrom } from 'rxjs';
-import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
 import { CreateAdminDto } from '@/api/http/controllers/dto/administrator/create-admin.dto';
 import { AdminError } from '@/common/constants/http-messages/errors.constants';
-import { ISSOServiceSingUpResponse } from '../../common/interface/account/sso-service-sign-up-response';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
 import { UUID } from 'crypto';
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
-import { IAccount } from '@/common/interface/account/account.interface';
+import { ISSOServiceSingUpResponse } from '@/common/interface/sso/account/sso-service-sign-up-response';
+import { ISSOServiceCheckByEmailPhoneResponse } from '@/common/interface/sso/account/sso-service-get-by-email-and-phone.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
 const ssoService = () => Inject(Providers.SSO);
@@ -74,7 +74,7 @@ export class AdministratorService {
         email: string,
         phone: string,
     ): Promise<CheckAccountDto> {
-        const response: ISsoServiceCheckByEmailPhoneResponse = await firstValueFrom(
+        const response: ISSOServiceCheckByEmailPhoneResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 { cmd: SsoCmd.CHECK_ACCOUNT_BY_EMAIL_AND_PHONE },
                 { email, phone },
@@ -107,7 +107,7 @@ export class AdministratorService {
     }
 
     private async _singUp(accountFields: IAccount): Promise<IAccount> {
-        const response: IServiceAccountSingUpResponse = await firstValueFrom(
+        const response: ISSOServiceSingUpResponse = await firstValueFrom(
             this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, accountFields),
         );
 

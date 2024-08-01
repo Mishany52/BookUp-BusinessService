@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { IAccount } from '@/common/interface/account/account.interface';
 
 export class GetAccountDto {
     @ApiProperty({ example: 'account_search_success' })
