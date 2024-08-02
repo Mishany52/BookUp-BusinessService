@@ -6,7 +6,6 @@ import { BusinessDomainEntity } from './business.domain-entity';
 import { BusinessError } from '@/common/constants/http-messages/errors.constants';
 import { Providers } from '../../common/constants/providers.constants';
 import { GetBusinessDto } from '@/api/http/controllers/dto/business/get-business.dto';
-import { IBusinessProps } from '@/common/interface/business/business.interface';
 
 const businessRepo = () => Inject(Providers.BUSINESS_REPO);
 @Injectable()
@@ -33,6 +32,7 @@ export class BusinessService {
             const businessDomainEntity = BusinessDomainEntity.create({ ...businessDto, owner });
             const businessEntity = await this._businessRepository.create(businessDomainEntity);
             return BusinessDomainEntity.create(businessEntity);
+            return BusinessDomainEntity.create(businessEntity);
         } catch (error) {
             throw new HttpException(BusinessError.BUSINESS_NOT_CREATED, HttpStatus.BAD_REQUEST);
         }
@@ -41,17 +41,31 @@ export class BusinessService {
     async getByOwnerId(ownerId: number): Promise<GetBusinessDto[]> {
         try {
             const businessEntities = await this._businessRepository.getByOwnerId(ownerId);
-            return businessEntities.map((business) => business.getDto());
+
+            const businessDomainEntities = businessEntities.map((business) =>
+                BusinessDomainEntity.create(business),
+            );
+            return businessDomainEntities.map((business) => business.getDto());
         } catch (e) {
             throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 
-    async getById(businessId: number): Promise<IBusinessProps> {
-        try {
-            return this._businessRepository.getByOwnerId(ownerId);
-        } catch (e) {
+    async getById(businessId: number): Promise<GetBusinessDto> {
+        const businessEntities = await this._businessRepository.getByAnyProperties({
+            id: businessId,
+        });
+        if (!businessEntities) {
             throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
+        const businessDomainEntity = BusinessDomainEntity.create(businessEntities);
+        return businessDomainEntity.getDto();
+    }
+
+    async existByID(businessId: number): Promise<boolean> {
+        const businessEntities = await this._businessRepository.getByAnyProperties({
+            id: businessId,
+        });
+        return !!businessEntities;
     }
 }

@@ -24,8 +24,8 @@ import { IAdministratorProps } from '@/common/interface/administrator/administra
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { BusinessService } from '../business/business.service';
+import * as lodash from 'lodash';
 import { isEmptyObject } from '@/common/utils/is-empty-object';
-
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
 const ssoService = () => Inject(Providers.SSO);
 @Injectable()
@@ -44,7 +44,7 @@ export class AdministratorService {
             password: adminDto.password,
             fio: adminDto.fio,
         } as IAccount;
-        const business = await this._getBusinessById(adminDto.businessId);
+        const business = await this._businessService.getById(adminDto.businessId);
         //! На точки тоже получение сделать
         const points = undefined;
         const checkAccount = await this._checkAccountByEmailAndPhone(
@@ -237,13 +237,5 @@ export class AdministratorService {
         if (isBusiness) {
             throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.BAD_REQUEST);
         }
-    }
-
-    private async _getBusinessById(businessId: number): Promise<IBusinessProps> {
-        const business = await this._businessService.getById(businessId);
-        if (isEmptyObject(business)) {
-            throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.BAD_REQUEST);
-        }
-        return business;
     }
 }
