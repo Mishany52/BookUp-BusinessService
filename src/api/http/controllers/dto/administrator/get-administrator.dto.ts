@@ -17,39 +17,30 @@ import { UUID } from 'crypto';
 import { GetBusinessDto } from '../business/get-business.dto';
 @Exclude()
 export class GetAdminDto implements IAdministratorProps {
-    @Expose()
     @IsNumber()
     id: number;
 
     @IsUUID()
-    @Expose()
     accountId: UUID;
 
     @IsEmail()
-    @Expose()
     email: string;
 
     @IsPhoneNumber('RU')
-    @Expose()
     phone: string;
 
     @IsString()
-    @Expose()
     fio: string;
 
     @IsBoolean()
-    @Expose()
     active: boolean;
 
     @IsUrl()
-    @Expose()
     imgUrl: string;
 
     @IsObject()
-    @Expose()
     @Type(() => GetBusinessDto)
     business: IBusinessProps;
-    @Expose()
     points: IPointProps[];
     constructor(admin: IAdministratorProps) {
         this.id = admin.id;

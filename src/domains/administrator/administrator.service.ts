@@ -1,9 +1,14 @@
 import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-administrator.dto';
+import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-administrator.dto';
 import { IAdministratorRepository } from '@/infrastructure/repository/administrator/administrator.repository.interface';
 import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AccountRole } from '../../common/enums/account-role.enum';
 import { firstValueFrom } from 'rxjs';
+import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
+import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
+import { AdminError, BusinessError } from '@/common/constants/http-messages/errors.constants';
+import { IServiceAccountSingUpResponse } from '../../common/interface/account/service-account-sing-up.interface';
 import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
 import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
 import { AdminError, BusinessError } from '@/common/constants/http-messages/errors.constants';
@@ -19,8 +24,8 @@ import { IAdministratorProps } from '@/common/interface/administrator/administra
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { BusinessService } from '../business/business.service';
-import * as lodash from 'lodash';
 import { isEmptyObject } from '@/common/utils/is-empty-object';
+
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
 const ssoService = () => Inject(Providers.SSO);
 @Injectable()
@@ -39,7 +44,7 @@ export class AdministratorService {
             password: adminDto.password,
             fio: adminDto.fio,
         } as IAccount;
-        const business = await this._businessService.getById(adminDto.businessId);
+        const business = await this._getBusinessById(adminDto.businessId);
         //! На точки тоже получение сделать
         const points = undefined;
         const checkAccount = await this._checkAccountByEmailAndPhone(
@@ -189,17 +194,12 @@ export class AdministratorService {
         return response.data;
     }
 
-    private async _createNewAdminAndAccount(
-        account: IAccount,
-        business: IBusinessProps,
-        points: IPointProps[],
-    ): Promise<GetAdminDto> {
-        const accountCreated = await this._singUp(account);
-        const adminProp = this._convertAccountToAdmin(accountCreated, business, points);
-        const admin = AdministratorDomainEntity.create(adminProp);
+    private async _createNewAdminAndAccount(adminRequest: IAccount): Promise<GetAdminDto> {
+        const account = await this._singUp(adminRequest);
+        const createOwnerDto = new CreateAdminDto(account);
+
         try {
-            const entity = await this._adminRepository.create(admin);
-            return entity.getDto();
+            return new GetAdminDto(await this._adminRepository.create(createOwnerDto));
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
         }
@@ -237,5 +237,13 @@ export class AdministratorService {
         if (isBusiness) {
             throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private async _getBusinessById(businessId: number): Promise<IBusinessProps> {
+        const business = await this._businessService.getById(businessId);
+        if (isEmptyObject(business)) {
+            throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.BAD_REQUEST);
+        }
+        return business;
     }
 }

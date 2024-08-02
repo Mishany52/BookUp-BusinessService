@@ -3,6 +3,7 @@ import { IOwnerProps } from '../../common/interface/owner/owner.interface';
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
+import { plainToClass } from 'class-transformer';
 
 export class BusinessDomainEntity implements IBusinessProps {
     id: number;
@@ -17,7 +18,7 @@ export class BusinessDomainEntity implements IBusinessProps {
     administrators: IAdministratorProps[];
 
     public getDto(): GetBusinessDto {
-        return new GetBusinessDto(this);
+        return plainToClass(GetBusinessDto, this);
     }
     private constructor(props: IBusinessProps) {
         if (props.id) {
