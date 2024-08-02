@@ -78,6 +78,14 @@ export class OwnerService {
         return new GetOwnerDto(owner);
     }
 
+    async getOwnerByAccountId(accountId: UUID): Promise<GetOwnerDto> {
+        const owner = await this._ownerRepository.getByAccountId(accountId);
+        if (!owner) {
+            throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
+        }
+        return new GetOwnerDto(owner);
+    }
+
     private async _getUpdateFields(
         owner: GetOwnerDto,
         updateOwnerDto: UpdateOwnerDto,

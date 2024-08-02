@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateOwnerDto } from '@/api/http/controllers/dto/owner/create-owner.dto';
 import { IOwner } from '../../../common/interface/owner/owner.interface';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class OwnerRepository implements IOwnerRepository {
@@ -26,6 +27,11 @@ export class OwnerRepository implements IOwnerRepository {
 
     async getById(ownerId: number): Promise<IOwner | undefined> {
         const owner = await this._ownerRepository.findOne({ where: { id: ownerId } });
+        return owner;
+    }
+
+    async getByAccountId(accountId: UUID): Promise<IOwner | undefined> {
+        const owner = await this._ownerRepository.findOne({ where: { accountId } });
         return owner;
     }
 }

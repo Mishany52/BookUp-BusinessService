@@ -6,6 +6,7 @@ import { AdministratorEntity } from './administrator.entity';
 import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
 import { UpdateAdminDto } from '@/api/http/controllers/dto/administrator/update-admin.dto';
 import { CreateAdminDto } from '@/api/http/controllers/dto/administrator/create-admin.dto';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class AdministratorRepository implements IAdministratorRepository {
@@ -28,5 +29,9 @@ export class AdministratorRepository implements IAdministratorRepository {
     async getById(adminId: number): Promise<IAdministratorDomainEntity | undefined> {
         const admin = await this._adminRepository.findOne({ where: { id: adminId } });
         return admin;
+    }
+
+    async getByAccountId(accountId: UUID): Promise<IAdministratorDomainEntity> {
+        return this._adminRepository.findOneBy({ accountId });
     }
 }

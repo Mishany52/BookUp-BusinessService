@@ -47,6 +47,10 @@ export class AdministratorService {
         throw new HttpException('Unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    async getByAccountId(accountId: UUID) {
+        return this._adminRepository.getByAccountId(accountId);
+    }
+
     private async _updateAccountRole(accountId: UUID): Promise<ISSOServiceSingUpResponse> {
         const responseUpdate = await firstValueFrom(
             this._ssoServiceClient.send(
