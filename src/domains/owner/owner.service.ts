@@ -8,11 +8,11 @@ import { IServiceAccountDeactivateResponse } from '../../common/interface/accoun
 import { firstValueFrom } from 'rxjs';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
-import { IOwner } from '../../common/interface/owner/owner.interface';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
 import { IAccount } from '@/common/interface/account/account.interface';
 import { UUID } from 'crypto';
+import { IOwnerProps } from '@/common/interface/owner/owner.interface';
 
 const ownerRepo = () => Inject(Providers.OWNER_REPO);
 const accountService = () => Inject(Providers.SSO);
@@ -81,8 +81,8 @@ export class OwnerService {
     private async _getUpdateFields(
         owner: GetOwnerDto,
         updateOwnerDto: UpdateOwnerDto,
-    ): Promise<Partial<IOwner>> {
-        const updatedFields: Partial<IOwner> = {};
+    ): Promise<Partial<IOwnerProps>> {
+        const updatedFields: Partial<IOwnerProps> = {};
 
         //Проверка на наличие хотя бы одного поля с данными
         if (

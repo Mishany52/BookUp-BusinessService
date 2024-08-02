@@ -10,7 +10,7 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RequestOwnerDto } from './dto/owner/request-owner.dto';
+import { RequestCreateOwnerDto } from './dto/owner/request-owner.dto';
 import { IServiceAccountSingUpResponse } from '@/common/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
@@ -33,8 +33,8 @@ export class OwnerHttpController {
 
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Post('createOwner')
-    async createOwner(@Body() ownerRequest: RequestOwnerDto): Promise<CreateOwnerDto> {
+    @Post('create')
+    async createOwner(@Body() ownerRequest: RequestCreateOwnerDto): Promise<CreateOwnerDto> {
         const ownerRequestWithRole = {
             ...ownerRequest,
             role: AccountRole.owner,
@@ -61,14 +61,14 @@ export class OwnerHttpController {
 
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Patch('deactivateOwner/:id')
+    @Patch('deactivate/:id')
     async delete(@Param('id') ownerId: number): Promise<GetOwnerDto> {
         return this._ownerService.deactivate(ownerId);
     }
 
     @ApiOperation({ summary: 'Обновления данных владельца бизнеса' })
     @ApiResponse({ status: 200 })
-    @Patch('updateOwner/:id')
+    @Patch('update/:id')
     async update(
         @Param('id') ownerId: number,
         @Body() updateOwnerDto: UpdateOwnerDto,

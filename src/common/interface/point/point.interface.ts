@@ -1,21 +1,20 @@
-import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
-import { IBusiness } from '@/common/interface/business/business.interface';
+import { IEmployeeProps } from '../employee/employee.interface';
+import { IWorkTimeProps } from '../time/work-time.interface';
+import { ITagProps } from '../tag/tag.interface';
+import { IBusinessProps } from '../business/business.interface';
+import { IAdministratorProps } from '../administrator/administrator.interface';
 
-import { IEmployee } from '../employee/employee.interface';
-import { IWorkTime } from '../time/work-time.interface';
-import { ITag } from '../tag/tag.interface';
-
-export interface IPoint {
+export interface IPointProps {
     id: number;
     name: string;
     description: string;
     address: string;
     postIdex: number;
-    weekWorkTime: IWorkTime;
+    weekWorkTime: IWorkTimeProps;
     siteUrl: string;
     logoUrl: string;
-    business: IBusiness;
-    administrator: IAdministratorDomainEntity;
-    employees: IEmployee[];
-    tags: ITag[];
+    business: IBusinessProps;
+    administrator: IAdministratorProps;
+    employees: IEmployeeProps[];
+    tags: ITagProps[];
 }

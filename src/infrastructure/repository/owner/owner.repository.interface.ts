@@ -1,7 +1,7 @@
-import { IOwner } from '../../../common/interface/owner/owner.interface';
+import { IOwnerProps } from '@/common/interface/owner/owner.interface';
 
 export interface IOwnerRepository {
-    create(createFields: Partial<IOwner>): Promise<IOwner>;
-    update(ownerUpdate: IOwner): Promise<IOwner>;
-    getById(ownerId: number): Promise<IOwner>;
+    create(createFields: IOwnerProps): Promise<IOwnerProps>;
+    update(ownerUpdate: Partial<IOwnerProps>): Promise<IOwnerProps>;
+    getById(ownerId: number): Promise<IOwnerProps>;
 }

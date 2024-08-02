@@ -1,4 +1,5 @@
 import { WorkTimeDto } from '@/common/dto/time/work-time.dto';
+import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNumber, IsObject, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';

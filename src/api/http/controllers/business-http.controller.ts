@@ -1,31 +1,33 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BusinessService } from '@/domains/business/business.service';
 import { CreateBusinessDto } from '@/api/http/controllers/dto/business/create-business.dto';
 import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
-import { Providers } from '@/common/constants/providers.constants';
-
-const ssoService = () => Inject(Providers.SSO);
+import { GetBusinessDto } from './dto/business/get-business.dto';
 
 @Controller('business')
 @ApiTags('business')
 export class BusinessHttpController {
-    constructor(
-        @ssoService() private readonly _accountServiceClient: ClientProxy,
-        private readonly _businessService: BusinessService,
-    ) {}
+    constructor(private readonly _businessService: BusinessService) {}
 
     @ApiOperation({ summary: 'Создание бизнеса' })
     @ApiResponse({ status: 200 })
-    @Post('createBusiness')
-    async createAdmin(@Body() businessRequest: CreateBusinessDto) {
+    @Post('create')
+    async create(
+        @Body() businessRequest: CreateBusinessDto,
+    ): Promise<BusinessDomainEntity | undefined> {
         return await this._businessService.create(businessRequest);
     }
+
+    @ApiOperation({ summary: 'Получение бизнеса по id владельца' })
+    @ApiCreatedResponse({
+        description: 'Business have been successfully created',
+        type: GetBusinessDto,
+    })
     @Get(':ownerId')
     public async getByOwnerId(
         @Param('ownerId') ownerId: number,
-    ): Promise<BusinessDomainEntity[] | undefined> {
+    ): Promise<GetBusinessDto[] | undefined> {
         return this._businessService.getByOwnerId(ownerId);
     }
 }

@@ -11,8 +11,8 @@ export const config = {
 
     ssoServiceOptions: {
         options: {
-            port: process.env.SSO_SERVICE_PORT,
-            host: process.env.SSO_SERVICE_HOST,
+            port: process.env.SSO_MICROSERVICE_PORT,
+            host: process.env.SSO_MICROSERVICE_HOST,
         },
         transport: Transport.TCP,
     },

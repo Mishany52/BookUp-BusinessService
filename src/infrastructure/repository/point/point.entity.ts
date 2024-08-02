@@ -1,13 +1,13 @@
-import { IPoint } from '@/common/interface/point/point.interface';
+import { IPointProps } from '@/common/interface/point/point.interface';
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BusinessEntity } from '../business/business.entity';
 import { AdministratorEntity } from '../administrator/administrator.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
-import { IWorkTime } from '@/common/interface/time/workTime.interface';
+import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
 import { TagEntity } from '../tag/tag.entity';
 
 @Entity({ name: 'points' })
-export class PointEntity implements IPoint {
+export class PointEntity implements IPointProps {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,7 +18,7 @@ export class PointEntity implements IPoint {
     description: string;
 
     @Column({ type: 'json' })
-    weekWorkTime: IWorkTime;
+    weekWorkTime: IWorkTimeProps;
 
     @Column({ type: 'varchar', nullable: false })
     address: string;

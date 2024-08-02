@@ -1,7 +1,7 @@
 import { UUID } from 'crypto';
-import { IBusiness } from '../business/business.interface';
+import { IBusinessProps } from '../business/business.interface';
 
-export interface IOwner {
+export interface IOwnerProps {
     id?: number;
     accountId?: UUID;
     fio: string;
@@ -9,5 +9,5 @@ export interface IOwner {
     phone: string;
     imgUrl?: string;
     active?: boolean;
-    businesses?: IBusiness[];
+    businesses?: IBusinessProps[];
 }

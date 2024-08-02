@@ -5,6 +5,8 @@ export interface IAccount {
     role: string;
     email: string;
     phone: string;
+    password?: string;
     fio: string;
     imgUrl?: string;
+    active: boolean;
 }

@@ -1,14 +1,14 @@
-import { IBusiness } from '@/common/interface/business/business.interface';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OwnerEntity } from '../owner/owner.entity';
 import { AdministratorEntity } from '../administrator/administrator.entity';
 import { PointEntity } from '../point/point.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
-import { IWorkTime } from '@/common/interface/time/work-time.interface';
+import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
 import { TagEntity } from '../tag/tag.entity';
+import { IBusinessProps } from '@/common/interface/business/business.interface';
 
 @Entity({ name: 'businesses' })
-export class BusinessEntity implements IBusiness {
+export class BusinessEntity implements IBusinessProps {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -22,7 +22,7 @@ export class BusinessEntity implements IBusiness {
     address: string;
 
     @Column({ type: 'json' })
-    weekWorkTime: IWorkTime;
+    weekWorkTime: IWorkTimeProps;
 
     @Column({ type: 'integer', nullable: false })
     postIndex: number;

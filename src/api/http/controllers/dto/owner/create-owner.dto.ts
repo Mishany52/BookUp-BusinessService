@@ -1,10 +1,10 @@
-import { IOwner } from '@/common/interface/owner/owner.interface';
+import { IOwnerProps } from '@/common/interface/owner/owner.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, IsUUID } from 'class-validator';
 import { UUID } from 'crypto';
 import { IAccount } from '@/common/interface/account/account.interface';
 
-export class CreateOwnerDto implements IOwner {
+export class CreateOwnerDto implements IOwnerProps {
     @ApiProperty({
         uniqueItems: true,
         example: '956c0d26-9d40-46a3-a8a5-2577741ef38c',
