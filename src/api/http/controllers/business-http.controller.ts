@@ -18,7 +18,7 @@ export class BusinessHttpController {
 
     @ApiOperation({ summary: 'Создание бизнеса' })
     @ApiResponse({ status: 200 })
-    @Post('createBusiness')
+    @Post('create')
     async createAdmin(@Body() businessRequest: CreateBusinessDto) {
         return await this._businessService.create(businessRequest);
     }

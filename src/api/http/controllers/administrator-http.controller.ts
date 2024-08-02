@@ -17,7 +17,7 @@ export class AdministratorController {
 
     @ApiOperation({ summary: 'Создание администратора бизнеса' })
     @ApiResponse({ status: 200 })
-    @Post('createAdmin')
+    @Post('create')
     async createAdmin(@Body() adminRequest: RequestAdminDto) {
         return await this._adminService.create(adminRequest);
     }
