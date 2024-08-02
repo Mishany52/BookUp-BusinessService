@@ -34,7 +34,7 @@ export class OwnerHttpController {
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
     @ApiResponse({ status: 200 })
     @Post('create')
-    async createOwner(@Body() ownerRequest: RequestCreateOwnerDto): Promise<CreateOwnerDto> {
+    async create(@Body() ownerRequest: RequestCreateOwnerDto): Promise<CreateOwnerDto> {
         const ownerRequestWithRole = {
             ...ownerRequest,
             role: AccountRole.owner,

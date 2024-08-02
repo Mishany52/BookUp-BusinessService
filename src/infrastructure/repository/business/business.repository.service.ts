@@ -19,15 +19,15 @@ export class BusinessRepository implements IBusinessRepository {
         return BusinessDomainEntity.create(businessEntity);
     }
 
-    async getByAnyProperties(businessDto: Partial<IBusinessProps>): Promise<BusinessDomainEntity> {
+    async getByAnyProperties(businessDto: Partial<IBusinessProps>): Promise<IBusinessProps> {
         const business = await this._businessRepository.findOne({
             where: { ...businessDto },
             relations: { owner: true },
         });
-        return BusinessDomainEntity.create(business);
+        return business;
     }
 
-    async getByOwnerId(ownerId: number): Promise<BusinessDomainEntity[] | undefined> {
+    async getByOwnerId(ownerId: number): Promise<IBusinessProps[] | undefined> {
         const businesses = await this._businessRepository.find({
             where: { owner: { id: ownerId } },
             relations: { owner: true },
@@ -37,9 +37,7 @@ export class BusinessRepository implements IBusinessRepository {
             return undefined;
         }
 
-        return businesses.map((business) =>
-            BusinessDomainEntity.create(business as IBusinessProps),
-        );
+        return businesses;
     }
     // async update(ownerUpdate: UpdateOwnerDto): Promise<IOwner> {
     //     try {

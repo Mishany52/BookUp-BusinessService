@@ -2,32 +2,50 @@ import { IAdministratorProps } from '@/common/interface/administrator/administra
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { Exclude, Expose, Type } from 'class-transformer';
+import {
+    IsBoolean,
+    IsEmail,
+    IsNumber,
+    IsObject,
+    IsPhoneNumber,
+    IsString,
+    IsUrl,
+    IsUUID,
+} from 'class-validator';
 
 import { UUID } from 'crypto';
 import { GetBusinessDto } from '../business/get-business.dto';
 @Exclude()
 export class GetAdminDto implements IAdministratorProps {
     @Expose()
+    @IsNumber()
     id: number;
 
+    @IsUUID()
     @Expose()
     accountId: UUID;
 
+    @IsEmail()
     @Expose()
     email: string;
 
+    @IsPhoneNumber('RU')
     @Expose()
     phone: string;
 
+    @IsString()
     @Expose()
     fio: string;
 
+    @IsBoolean()
     @Expose()
     active: boolean;
 
+    @IsUrl()
     @Expose()
     imgUrl: string;
 
+    @IsObject()
     @Expose()
     @Type(() => GetBusinessDto)
     business: IBusinessProps;
