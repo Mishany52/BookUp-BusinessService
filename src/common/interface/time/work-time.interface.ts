@@ -1,4 +1,4 @@
-import { IDayWorkTime } from './dayWorkTime.interface';
+import { IDayWorkTime } from './day-work-time.interface';
 
 export interface IWorkTimeProps {
     monday: IDayWorkTime;

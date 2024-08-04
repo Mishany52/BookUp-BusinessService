@@ -14,12 +14,13 @@ import { RequestCreateOwnerDto } from './dto/owner/request-owner.dto';
 import { IServiceAccountSingUpResponse } from '@/common/interface/account/service-account-sing-up.interface';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { AccountRole } from '@/common/enums/account-role.enum';
 import { CreateOwnerDto } from './dto/owner/create-owner.dto';
 import { GetOwnerDto } from './dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
+import { AccountRole } from '@/common/enums/account-role.enum';
+import { ISSOServiceSingUpResponse } from '@/common/interface/sso/account/sso-service-sign-up-response';
 
 const ssoService = () => Inject(Providers.SSO);
 
@@ -40,7 +41,7 @@ export class OwnerHttpController {
             role: AccountRole.owner,
         };
 
-        const singUpAccountResponse: IServiceAccountSingUpResponse = await firstValueFrom(
+        const singUpAccountResponse: ISSOServiceSingUpResponse = await firstValueFrom(
             this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, ownerRequestWithRole),
         );
 

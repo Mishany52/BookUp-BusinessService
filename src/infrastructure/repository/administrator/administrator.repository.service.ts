@@ -24,4 +24,8 @@ export class AdministratorRepository implements IAdministratorRepository {
         const entity = await this._adminRepository.findOne({ where: { id: adminId } });
         return AdministratorDomainEntity.create(entity);
     }
+
+    async getByAccountId(accountId: UUID): Promise<IAdministratorDomainEntity> {
+        return this._adminRepository.findOneBy({ accountId });
+    }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IAccount } from './account.interface';
 
-export interface IServiceAccountSearchByAccountIdResponse {
+export interface ISSOServiceSearchByAccountIdResponse {
     status: number;
     message: string;
     account: IAccount | null;

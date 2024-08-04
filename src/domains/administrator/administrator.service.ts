@@ -133,7 +133,7 @@ export class AdministratorService {
         email: string,
         phone: string,
     ): Promise<CheckAccountDto> {
-        const response: ISsoServiceCheckByEmailPhoneResponse = await firstValueFrom(
+        const response: ISSOServiceCheckByEmailPhoneResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 { cmd: SsoCmd.CHECK_ACCOUNT_BY_EMAIL_AND_PHONE },
                 { email, phone },
@@ -172,7 +172,7 @@ export class AdministratorService {
     }
 
     private async _singUp(accountFields: IAccount): Promise<IAccount> {
-        const response: IServiceAccountSingUpResponse = await firstValueFrom(
+        const response: ISSOServiceSingUpResponse = await firstValueFrom(
             this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, accountFields),
         );
 

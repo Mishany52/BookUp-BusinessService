@@ -28,4 +28,9 @@ export class OwnerRepository implements IOwnerRepository {
         const owner = await this._ownerRepository.findOne({ where: { id: ownerId } });
         return owner;
     }
+
+    async getByAccountId(accountId: UUID): Promise<IOwner | undefined> {
+        const owner = await this._ownerRepository.findOne({ where: { accountId } });
+        return owner;
+    }
 }

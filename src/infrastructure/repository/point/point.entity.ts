@@ -5,6 +5,7 @@ import { AdministratorEntity } from '../administrator/administrator.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
 import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
 import { TagEntity } from '../tag/tag.entity';
+import { IWorkTime } from '@/common/interface/time/work-time.interface';
 
 @Entity({ name: 'points' })
 export class PointEntity implements IPointProps {

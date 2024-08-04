@@ -4,24 +4,22 @@ import { OwnerError } from '@/common/constants/http-messages/errors.constants';
 import { IOwnerRepository } from '@/infrastructure/repository/owner/owner.repository.interface';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { IServiceAccountDeactivateResponse } from '../../common/interface/account/service-account-deactivate-by-id.interface';
 import { firstValueFrom } from 'rxjs';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
 import { Providers } from '@/common/constants/providers.constants';
 import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
-import { IAccount } from '@/common/interface/account/account.interface';
 import { UUID } from 'crypto';
 import { IOwnerProps } from '@/common/interface/owner/owner.interface';
 
 const ownerRepo = () => Inject(Providers.OWNER_REPO);
-const accountService = () => Inject(Providers.SSO);
+const ssoService = () => Inject(Providers.SSO);
 
 @Injectable()
 export class OwnerService {
     constructor(
         @ownerRepo() private readonly _ownerRepository: IOwnerRepository,
-        @accountService() private readonly _ssoServiceClient: ClientProxy,
+        @ssoService() private readonly _ssoServiceClient: ClientProxy,
     ) {}
 
     async create(ownerDto: CreateOwnerDto): Promise<GetOwnerDto> {
@@ -45,7 +43,7 @@ export class OwnerService {
         const owner = await this.getOwnerById(ownerId);
 
         Object.assign(owner, { active: false });
-        const accountDeactivatedResponse: IServiceAccountDeactivateResponse = await firstValueFrom(
+        const accountDeactivatedResponse: ISSOServiceDeactivateResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
                     cmd: SsoCmd.DEACTIVATE_ACCOUNT_BY_ID,
@@ -72,6 +70,14 @@ export class OwnerService {
 
     async getOwnerById(ownerId: number): Promise<GetOwnerDto> {
         const owner = await this._ownerRepository.getById(ownerId);
+        if (!owner) {
+            throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
+        }
+        return new GetOwnerDto(owner);
+    }
+
+    async getOwnerByAccountId(accountId: UUID): Promise<GetOwnerDto> {
+        const owner = await this._ownerRepository.getByAccountId(accountId);
         if (!owner) {
             throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
@@ -108,7 +114,7 @@ export class OwnerService {
         accountId: UUID,
         updateFields: Partial<IAccount>,
     ): Promise<IAccount> {
-        const accountUpdateResponse: IServiceAccountUpdateResponse = await firstValueFrom(
+        const ssoUpdateResponse: ISSOServiceUpdateResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
                     cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
@@ -116,16 +122,16 @@ export class OwnerService {
                 { id: accountId, ...updateFields },
             ),
         );
-        if (accountUpdateResponse.status !== HttpStatus.OK) {
+        if (ssoUpdateResponse.status !== HttpStatus.OK) {
             throw new HttpException(
                 {
-                    message: accountUpdateResponse.message,
-                    errors: accountUpdateResponse.errors,
+                    message: ssoUpdateResponse.message,
+                    errors: ssoUpdateResponse.errors,
                     data: null,
                 },
-                accountUpdateResponse.status,
+                ssoUpdateResponse.status,
             );
         }
-        return accountUpdateResponse.data;
+        return ssoUpdateResponse.data;
     }
 }
