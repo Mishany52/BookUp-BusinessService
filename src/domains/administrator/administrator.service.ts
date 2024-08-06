@@ -18,6 +18,7 @@ import { getUpdateFields } from '@/common/utils/get-update-fields';
 import { IAccountServicePort } from '@/infrastructure/ports/account-service.port';
 import { IAuthServicePort } from '@/infrastructure/ports/auth-service.port';
 import { SignUpDto } from '@/api/http/controllers/dto/auth/sing-up.dto';
+import { UUID } from 'crypto';
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
 const accountService = () => Inject(Providers.ACCOUNT_SERVICE);
 const authService = () => Inject(Providers.AUTH_SERVICE);
@@ -84,6 +85,9 @@ export class AdministratorService {
         }
         const adminDomainEntity = AdministratorDomainEntity.create(adminEntity);
         return adminDomainEntity.getDto();
+    }
+    async getByAccountId(accountId: UUID) {
+        return this._adminRepository.getByAccountId(accountId);
     }
 
     async update(adminId: number, adminUpdateDto: Partial<UpdateAdminDto>): Promise<GetAdminDto> {

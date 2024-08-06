@@ -1,6 +1,6 @@
 import { MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD } from '@/common/constants/auth.constants';
 import { AccountRole } from '@/common/enums/account-role.enum';
-import { IAccount } from '@/common/interface/account/account.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import {
     IsBoolean,
     IsEmail,

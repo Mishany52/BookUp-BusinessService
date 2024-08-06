@@ -7,6 +7,7 @@ import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dt
 import { Providers } from '@/common/constants/providers.constants';
 import { getUpdateFields } from '@/common/utils/get-update-fields';
 import { IAccountServicePort } from '@/infrastructure/ports/account-service.port';
+import { UUID } from 'crypto';
 
 const ownerRepo = () => Inject(Providers.OWNER_REPO);
 const accountService = () => Inject(Providers.ACCOUNT_SERVICE);
@@ -48,6 +49,14 @@ export class OwnerService {
 
     async getOwnerById(ownerId: number): Promise<GetOwnerDto> {
         const owner = await this._ownerRepository.getById(ownerId);
+        if (!owner) {
+            throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
+        }
+        return new GetOwnerDto(owner);
+    }
+
+    async getOwnerByAccountId(accountId: UUID): Promise<GetOwnerDto> {
+        const owner = await this._ownerRepository.getByAccountId(accountId);
         if (!owner) {
             throw new HttpException(OwnerError.OWNER_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }

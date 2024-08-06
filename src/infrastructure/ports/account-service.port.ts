@@ -1,5 +1,5 @@
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
-import { IAccount } from '@/common/interface/account/account.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { UUID } from 'crypto';
 
 export interface IAccountServicePort {

@@ -1,15 +1,15 @@
 import { AccountServiceCmd } from '@/common/constants/account-service-cmd.constant';
 import { Providers } from '@/common/constants/providers.constants';
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
-import { IAccount } from '@/common/interface/account/account.interface';
-import { ISsoServiceCheckByEmailPhoneResponse } from '@/common/interface/account/service-account-get-by-email-and-phone.interface';
-import { IServiceAccountSingUpResponse } from '@/common/interface/account/service-account-sing-up.interface';
-import { IServiceAccountUpdateResponse } from '@/common/interface/account/service-account-update-by-id.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
+import { ISsoServiceCheckByEmailPhoneResponse } from '@/common/interface/sso/account/sso-service-get-by-email-and-phone.interface';
 import { IAccountServicePort } from '@/infrastructure/ports/account-service.port';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { UUID } from 'crypto';
 import { firstValueFrom } from 'rxjs';
+import { ISSOServiceUpdateResponse } from '@/common/interface/sso/account/sso-service-update-response';
+import { ISSOServiceSingUpResponse } from '@/common/interface/sso/account/sso-service-sign-up-response';
 
 const ssoService = () => Inject(Providers.SSO);
 @Injectable()
@@ -31,7 +31,7 @@ export class AccountServiceAdapter implements IAccountServicePort {
         return response.data;
     }
     async update(id: UUID, updateFields: Partial<IAccount>): Promise<IAccount> {
-        const responseUpdate: IServiceAccountUpdateResponse = await firstValueFrom(
+        const responseUpdate: ISSOServiceUpdateResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
                     cmd: AccountServiceCmd.UPDATE_ACCOUNT_BY_ID,
@@ -53,7 +53,7 @@ export class AccountServiceAdapter implements IAccountServicePort {
         return responseUpdate.data;
     }
     async deactivate(id: UUID): Promise<void> {
-        const response: IServiceAccountSingUpResponse = await firstValueFrom(
+        const response: ISSOServiceSingUpResponse = await firstValueFrom(
             this._ssoServiceClient.send(
                 {
                     cmd: AccountServiceCmd.DEACTIVATE_ACCOUNT_BY_ID,
