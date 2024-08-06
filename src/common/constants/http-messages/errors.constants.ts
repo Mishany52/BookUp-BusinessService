@@ -19,3 +19,8 @@ export enum BusinessError {
     BUSINESS_NOT_FOUND = "Business hasn't been found",
     BUSINESS_NOT_CREATED = "Business hasn't been created",
 }
+
+export enum SharedError {
+    NOT_UPDATE = 'Object not update',
+    NOTHING_UPDATE = "Object doesn't have any data for update",
+}

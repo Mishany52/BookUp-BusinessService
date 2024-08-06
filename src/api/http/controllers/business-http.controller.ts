@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BusinessService } from '@/domains/business/business.service';
 import { CreateBusinessDto } from '@/api/http/controllers/dto/business/create-business.dto';
 import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
 import { GetBusinessDto } from './dto/business/get-business.dto';
+import { GetBusinessQueryDto } from './dto/business/get-business-query.dto';
 
 @Controller('business')
 @ApiTags('business')
@@ -24,10 +25,15 @@ export class BusinessHttpController {
         description: 'Business have been successfully created',
         type: GetBusinessDto,
     })
-    @Get(':ownerId')
-    public async getByOwnerId(
-        @Param('ownerId') ownerId: number,
+    @Get('by-owner-id')
+    async getByOwnerId(
+        @Query('ownerId', ParseIntPipe) ownerId: number,
     ): Promise<GetBusinessDto[] | undefined> {
         return this._businessService.getByOwnerId(ownerId);
+    }
+
+    @Get('by-properties')
+    async getByAnyProperties(@Query() query: GetBusinessQueryDto) {
+        return this._businessService.getByAnyProperties(query);
     }
 }

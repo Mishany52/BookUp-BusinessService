@@ -12,7 +12,12 @@ async function bootstrap() {
     const configService = app.get(TypedConfigService);
     const PORT = configService.get('apiPort') || 3000;
     app.useGlobalPipes(
-        new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+            transformOptions: { enableImplicitConversion: true },
+            forbidNonWhitelisted: true,
+        }),
     );
     app.enableCors({
         origin: `${configService.get('frontendBusinessUrl')}`,

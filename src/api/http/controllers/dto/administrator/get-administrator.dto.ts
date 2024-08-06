@@ -1,7 +1,7 @@
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
     IsBoolean,
     IsEmail,
@@ -15,7 +15,6 @@ import {
 
 import { UUID } from 'crypto';
 import { GetBusinessDto } from '../business/get-business.dto';
-@Exclude()
 export class GetAdminDto implements IAdministratorProps {
     @IsNumber()
     id: number;

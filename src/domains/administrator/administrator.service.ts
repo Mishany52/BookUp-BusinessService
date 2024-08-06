@@ -2,38 +2,32 @@ import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-admini
 import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-administrator.dto';
 import { IAdministratorRepository } from '@/infrastructure/repository/administrator/administrator.repository.interface';
 import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import { AccountRole } from '../../common/enums/account-role.enum';
-import { firstValueFrom } from 'rxjs';
-import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
-import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
 import { AdminError, BusinessError } from '@/common/constants/http-messages/errors.constants';
-import { IServiceAccountSingUpResponse } from '../../common/interface/account/service-account-sing-up.interface';
-import { ISsoServiceCheckByEmailPhoneResponse } from '../../common/interface/account/service-account-get-by-email-and-phone.interface';
-import { IServiceAccountUpdateResponse } from '../../common/interface/account/service-account-update-by-id.interface';
-import { AdminError, BusinessError } from '@/common/constants/http-messages/errors.constants';
-import { IServiceAccountSingUpResponse } from '../../common/interface/account/service-account-sing-up.interface';
 import { Providers } from '@/common/constants/providers.constants';
-import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
-import { UUID } from 'crypto';
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
-import { IAccount } from '@/common/interface/account/account.interface';
+import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { RequestCreateAdminDto } from '@/api/http/controllers/dto/administrator/request-admin.dto';
 import { AdministratorDomainEntity } from './administrator.domain-entity';
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { BusinessService } from '../business/business.service';
-import * as lodash from 'lodash';
-import { isEmptyObject } from '@/common/utils/is-empty-object';
+import { UpdateAdminDto } from '@/api/http/controllers/dto/administrator/update-admin.dto';
+import { getUpdateFields } from '@/common/utils/get-update-fields';
+import { IAccountServicePort } from '@/infrastructure/ports/account-service.port';
+import { IAuthServicePort } from '@/infrastructure/ports/auth-service.port';
+import { SignUpDto } from '@/api/http/controllers/dto/auth/sing-up.dto';
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
-const ssoService = () => Inject(Providers.SSO);
+const accountService = () => Inject(Providers.ACCOUNT_SERVICE);
+const authService = () => Inject(Providers.AUTH_SERVICE);
 @Injectable()
 export class AdministratorService {
     constructor(
         private readonly _businessService: BusinessService,
         @adminRepo() private readonly _adminRepository: IAdministratorRepository,
-        @ssoService() private readonly _ssoServiceClient: ClientProxy,
+        @accountService() private readonly _accountService: IAccountServicePort,
+        @authService() private readonly _authService: IAuthServicePort,
     ) {}
 
     async create(adminDto: RequestCreateAdminDto): Promise<GetAdminDto> {
@@ -43,11 +37,11 @@ export class AdministratorService {
             role: AccountRole.admin,
             password: adminDto.password,
             fio: adminDto.fio,
-        } as IAccount;
+        } as SignUpDto;
         const business = await this._businessService.getById(adminDto.businessId);
         //! На точки тоже получение сделать
         const points = undefined;
-        const checkAccount = await this._checkAccountByEmailAndPhone(
+        const checkAccount = await this._accountService.checkByEmailAndPhone(
             adminDto.email,
             adminDto.phone,
         );
@@ -69,11 +63,12 @@ export class AdministratorService {
         const admin = await this.getAdminById(adminId);
 
         Object.assign(admin, { active: false });
-        await this._deactivateAccount(admin.accountId);
+        await this._accountService.deactivate(admin.accountId);
 
         try {
-            const adminUpdated = await this._adminRepository.update(admin);
-            return adminUpdated.getDto();
+            const adminUpdateEntity = await this._adminRepository.update(admin);
+            const adminDomainEntity = AdministratorDomainEntity.create(adminUpdateEntity);
+            return adminDomainEntity.getDto();
         } catch (e) {
             throw new HttpException(
                 AdminError.ADMIN_DEACTIVATE_FAILED,
@@ -83,73 +78,23 @@ export class AdministratorService {
     }
 
     async getAdminById(adminId: number): Promise<GetAdminDto> {
-        const admin = await this._adminRepository.getById(adminId);
-        if (!admin) {
+        const adminEntity = await this._adminRepository.getById(adminId);
+        if (!adminEntity) {
             throw new HttpException(AdminError.ADMIN_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
-        return admin.getDto();
+        const adminDomainEntity = AdministratorDomainEntity.create(adminEntity);
+        return adminDomainEntity.getDto();
     }
 
-    private async _deactivateAccount(accountId: UUID) {
-        const response: IServiceAccountSingUpResponse = await firstValueFrom(
-            this._ssoServiceClient.send(
-                {
-                    cmd: SsoCmd.DEACTIVATE_ACCOUNT_BY_ID,
-                },
-                accountId,
-            ),
-        );
-        if (response.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: response.message,
-                    errors: response.errors,
-                    data: null,
-                },
-                response.status,
-            );
+    async update(adminId: number, adminUpdateDto: Partial<UpdateAdminDto>): Promise<GetAdminDto> {
+        const adminEntity = await this._adminRepository.getById(adminId);
+        if (!adminEntity) {
+            throw new HttpException(AdminError.ADMIN_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
-    }
-
-    private async _updateAccountRole(accountId: UUID): Promise<IServiceAccountUpdateResponse> {
-        const responseUpdate = await firstValueFrom(
-            this._ssoServiceClient.send(
-                {
-                    cmd: SsoCmd.UPDATE_ACCOUNT_BY_ID,
-                },
-                { id: accountId, role: AccountRole.admin },
-            ),
-        );
-
-        if (responseUpdate.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: responseUpdate.message,
-                    errors: responseUpdate.errors,
-                    data: null,
-                },
-                responseUpdate.status,
-            );
-        }
-        return responseUpdate;
-    }
-
-    private async _checkAccountByEmailAndPhone(
-        email: string,
-        phone: string,
-    ): Promise<CheckAccountDto> {
-        const response: ISSOServiceCheckByEmailPhoneResponse = await firstValueFrom(
-            this._ssoServiceClient.send(
-                { cmd: SsoCmd.CHECK_ACCOUNT_BY_EMAIL_AND_PHONE },
-                { email, phone },
-            ),
-        );
-
-        if (response.status !== HttpStatus.OK) {
-            throw new HttpException(response.message, response.status);
-        }
-
-        return response.data;
+        adminUpdateDto = await getUpdateFields(adminEntity, adminUpdateDto);
+        const adminUpdateEntity = await this._adminRepository.update(adminUpdateDto);
+        const adminDomainEntity = AdministratorDomainEntity.create(adminUpdateEntity);
+        return adminDomainEntity.getDto();
     }
 
     private async _createAdminByExistingAccount(
@@ -164,42 +109,33 @@ export class AdministratorService {
             );
         }
 
-        const accountUpdated = await this._updateAccountRole(account.id);
-        const adminProps = this._convertAccountToAdmin(accountUpdated.data, business, points);
+        const accountUpdated = await this._accountService.update(account.id, {
+            role: AccountRole.admin,
+        });
+        const adminProps = this._convertAccountToAdmin(accountUpdated, business, points);
         const admin = AdministratorDomainEntity.create(adminProps);
 
         try {
             const adminEntity = await this._adminRepository.create(admin);
-            return adminEntity.getDto();
+            const adminDomainEntity = AdministratorDomainEntity.create(adminEntity);
+            return adminDomainEntity.getDto();
         } catch (e) {
             throw new HttpException(AdminError.ADMIN_CREATION_FAILED, HttpStatus.BAD_REQUEST);
         }
     }
 
-    private async _singUp(accountFields: IAccount): Promise<IAccount> {
-        const response: ISSOServiceSingUpResponse = await firstValueFrom(
-            this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, accountFields),
-        );
-
-        if (response.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: response.message,
-                    errors: response.errors,
-                    data: null,
-                },
-                response.status,
-            );
-        }
-        return response.data;
-    }
-
-    private async _createNewAdminAndAccount(adminRequest: IAccount): Promise<GetAdminDto> {
-        const account = await this._singUp(adminRequest);
-        const createOwnerDto = new CreateAdminDto(account);
-
+    private async _createNewAdminAndAccount(
+        account: SignUpDto,
+        business: IBusinessProps,
+        points: IPointProps[],
+    ): Promise<GetAdminDto> {
+        const accountCreated = await this._authService.singUp(account);
+        const adminProp = this._convertAccountToAdmin(accountCreated, business, points);
+        const admin = AdministratorDomainEntity.create(adminProp);
         try {
-            return new GetAdminDto(await this._adminRepository.create(createOwnerDto));
+            const adminEntity = await this._adminRepository.create(admin);
+            const adminDomainEntity = AdministratorDomainEntity.create(adminEntity);
+            return adminDomainEntity.getDto();
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
         }

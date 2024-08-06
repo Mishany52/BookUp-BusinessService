@@ -5,11 +5,11 @@ import { IWorkTimeProps } from '../time/work-time.interface';
 export interface IBusinessProps {
     id?: number;
     name: string;
-    description: string;
     address: string;
     postIndex: number;
     weekWorkTime: IWorkTimeProps;
     owner: IOwnerProps;
+    description?: string;
     siteUrl?: string;
     logoUrl?: string;
     administrators?: Array<IAdministratorProps>;

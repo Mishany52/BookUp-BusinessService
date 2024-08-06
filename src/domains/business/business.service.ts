@@ -61,7 +61,9 @@ export class BusinessService {
         const businessDomainEntity = BusinessDomainEntity.create(businessEntities);
         return businessDomainEntity.getDto();
     }
-
+    async getByAnyProperties(query: Partial<GetBusinessDto>) {
+        return this._businessRepository.getByAnyProperties(query);
+    }
     async existByID(businessId: number): Promise<boolean> {
         const businessEntities = await this._businessRepository.getByAnyProperties({
             id: businessId,

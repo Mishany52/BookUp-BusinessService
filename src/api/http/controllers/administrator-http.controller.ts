@@ -1,8 +1,9 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdministratorService } from '@/domains/administrator/administrator.service';
 import { RequestCreateAdminDto } from './dto/administrator/request-admin.dto';
 import { GetAdminDto } from './dto/administrator/get-administrator.dto';
+import { UpdateAdminDto } from './dto/administrator/update-admin.dto';
 
 @ApiTags('Administrator')
 @Controller('administrator')
@@ -21,5 +22,15 @@ export class AdministratorController {
     @Post('deactivate/:id')
     async deactivate(@Param('id') id: number): Promise<GetAdminDto> {
         return await this._adminService.deactivate(id);
+    }
+
+    @ApiOperation({ summary: 'Обновление администратора бизнеса' })
+    @ApiCreatedResponse({
+        status: 200,
+        type: GetAdminDto,
+    })
+    @Post('update/:id')
+    async update(@Param('id') id: number, @Body() updateDto: UpdateAdminDto): Promise<GetAdminDto> {
+        return await this._adminService.update(id, updateDto);
     }
 }

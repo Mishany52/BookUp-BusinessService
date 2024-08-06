@@ -1,35 +1,20 @@
 import { OwnerService } from '@/domains/owner/owner.service';
-import {
-    Body,
-    Controller,
-    HttpException,
-    HttpStatus,
-    Inject,
-    Param,
-    Patch,
-    Post,
-} from '@nestjs/common';
+import { Body, Controller, Inject, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RequestCreateOwnerDto } from './dto/owner/request-owner.dto';
-import { IServiceAccountSingUpResponse } from '@/common/interface/account/service-account-sing-up.interface';
-import { firstValueFrom } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
+import { AccountRole } from '@/common/enums/account-role.enum';
 import { CreateOwnerDto } from './dto/owner/create-owner.dto';
 import { GetOwnerDto } from './dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
+import { IAuthServicePort } from '@/infrastructure/ports/auth-service.port';
 import { Providers } from '@/common/constants/providers.constants';
-import { SsoCmd } from '@/common/constants/sso-microservice-cmd.constants';
-import { AccountRole } from '@/common/enums/account-role.enum';
-import { ISSOServiceSingUpResponse } from '@/common/interface/sso/account/sso-service-sign-up-response';
-
-const ssoService = () => Inject(Providers.SSO);
-
+const authService = () => Inject(Providers.AUTH_SERVICE);
 @ApiTags('Owner')
 @Controller('owner')
 export class OwnerHttpController {
     constructor(
         private readonly _ownerService: OwnerService,
-        @ssoService() private readonly _ssoServiceClient: ClientProxy,
+        @authService() private readonly _authService: IAuthServicePort,
     ) {}
 
     @ApiOperation({ summary: 'Создание владельца бизнеса' })
@@ -41,21 +26,8 @@ export class OwnerHttpController {
             role: AccountRole.owner,
         };
 
-        const singUpAccountResponse: ISSOServiceSingUpResponse = await firstValueFrom(
-            this._ssoServiceClient.send({ cmd: SsoCmd.SING_UP }, ownerRequestWithRole),
-        );
-
-        if (singUpAccountResponse.status !== HttpStatus.OK) {
-            throw new HttpException(
-                {
-                    message: singUpAccountResponse.message,
-                    errors: singUpAccountResponse.errors,
-                    data: null,
-                },
-                singUpAccountResponse.status,
-            );
-        }
-        const createOwnerDto = new CreateOwnerDto(singUpAccountResponse.data);
+        const account = await this._authService.singUp(ownerRequestWithRole);
+        const createOwnerDto = new CreateOwnerDto(account);
 
         return this._ownerService.create(createOwnerDto);
     }

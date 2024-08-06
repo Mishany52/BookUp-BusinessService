@@ -8,5 +8,5 @@ export interface IAccount {
     password?: string;
     fio: string;
     imgUrl?: string;
-    active: boolean;
+    active?: boolean;
 }
