@@ -1,5 +1,4 @@
 import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-administrator.dto';
-import { GetAdminDto } from '@/api/http/controllers/dto/administrator/get-administrator.dto';
 import { IAdministratorRepository } from '@/infrastructure/repository/administrator/administrator.repository.interface';
 import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { AccountRole } from '../../common/enums/account-role.enum';
