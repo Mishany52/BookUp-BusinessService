@@ -1,32 +1,41 @@
-import { IAdministratorDomainEntity } from '../../common/interface/administrator/administrator.interface';
-import { IBusinessDomainEntity } from '../../common/interface/business/business.domain-entity.interface';
-import { IOwner } from '../../common/interface/owner/owner.interface';
-import { IWorkTime } from '../../common/interface/time/work-time.interface';
+import { GetBusinessDto } from '@/api/http/controllers/dto/business/get-business.dto';
+import { IOwnerProps } from '../../common/interface/owner/owner.interface';
+import { IBusinessProps } from '@/common/interface/business/business.interface';
+import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
+import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 
-export class BusinessDomainEntity implements IBusinessDomainEntity {
+export class BusinessDomainEntity implements IBusinessProps {
     id: number;
     name: string;
     description: string;
     address: string;
     postIndex: number;
-    weekWorkTime: IWorkTime;
+    weekWorkTime: IWorkTimeProps;
     siteUrl: string;
     logoUrl: string;
-    owner: IOwner;
-    administrators: IAdministratorDomainEntity[];
+    owner: IOwnerProps;
+    administrators: IAdministratorProps[];
 
-    constructor(model: Partial<BusinessDomainEntity>) {
-        if (model.id) {
-            this.id = model.id;
+    public getDto(): GetBusinessDto {
+        return new GetBusinessDto(this);
+    }
+    private constructor(props: IBusinessProps) {
+        if (props.id) {
+            this.id = props.id;
         }
-        this.name = model.name || null;
-        this.description = model.description || null;
-        this.address = model.address || null;
-        this.postIndex = model.postIndex || null;
-        this.weekWorkTime = model.weekWorkTime || null;
-        this.siteUrl = model.siteUrl || null;
-        this.logoUrl = model.logoUrl || null;
-        this.owner = model.owner || null;
-        this.administrators = model.administrators || null;
+        this.name = props.name || null;
+        this.description = props.description || null;
+        this.address = props.address || null;
+        this.postIndex = props.postIndex || null;
+        this.weekWorkTime = props.weekWorkTime || null;
+        this.siteUrl = props.siteUrl || null;
+        this.logoUrl = props.logoUrl || null;
+        this.owner = props.owner || null;
+        this.administrators = props.administrators || null;
+    }
+
+    public static create(props: IBusinessProps): BusinessDomainEntity {
+        const business = new BusinessDomainEntity({ ...props });
+        return business;
     }
 }

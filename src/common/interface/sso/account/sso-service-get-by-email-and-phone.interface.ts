@@ -2,7 +2,7 @@
 
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
 
-export interface ISSOServiceCheckByEmailPhoneResponse {
+export interface ISsoServiceCheckByEmailPhoneResponse {
     status: number;
     message: string;
     data: CheckAccountDto | null;

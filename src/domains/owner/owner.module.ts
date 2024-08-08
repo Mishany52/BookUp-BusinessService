@@ -3,12 +3,14 @@ import { OwnerRepositoryModule } from '@/infrastructure/repository/owner/owner.r
 import { OwnerService } from './owner.service';
 
 import { OwnerHttpController } from '@/api/http/controllers/owner-http.controller';
-import { ssoServiceProvider } from '../sso/sso-service.persistence-provider';
+import { accountServiceProvider } from '@/infrastructure/ports/account-service.persistence-provider';
+import { ssoServiceProvider } from '@/infrastructure/ports/sso-service.persistence-provider';
+import { authServiceProvider } from '@/infrastructure/ports/auth-service.persistence-provider';
 
 @Module({
     imports: [OwnerRepositoryModule],
     controllers: [OwnerHttpController],
-    providers: [OwnerService, ssoServiceProvider],
-    exports: [OwnerService, ssoServiceProvider],
+    providers: [OwnerService, accountServiceProvider, ssoServiceProvider, authServiceProvider],
+    exports: [OwnerService],
 })
 export class OwnerModule {}

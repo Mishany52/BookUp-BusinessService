@@ -1,4 +1,4 @@
-import { IEmployee } from '@/common/interface/employee/employee.interface';
+import { IEmployeeProps } from '@/common/interface/employee/employee.interface';
 import {
     IsBoolean,
     IsEmail,
@@ -14,7 +14,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BusinessEntity } from '../business/business.entity';
 
 @Entity({ name: 'employees' })
-export class EmployeeEntity implements IEmployee {
+export class EmployeeEntity implements IEmployeeProps {
     @PrimaryGeneratedColumn()
     @IsNumber()
     id: number;

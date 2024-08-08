@@ -1,21 +1,22 @@
 import { MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD } from '@/common/constants/auth.constants';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsUUID, Length } from 'class-validator';
-import { UUID } from 'crypto';
+import { IsEmail, IsNumber, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
 
-export class RequestAdminDto {
+export class RequestCreateAdminDto {
     @ApiProperty({
         uniqueItems: true,
         example: '+79000000000',
     })
     @IsPhoneNumber('RU')
     readonly phone: string;
+
     @ApiProperty({
         uniqueItems: true,
         example: 'test@gmail.com',
     })
     @IsEmail()
     readonly email: string;
+
     @ApiProperty({
         minLength: MIN_LENGTH_PASSWORD,
         example: 'testTest',
@@ -31,10 +32,19 @@ export class RequestAdminDto {
     })
     @IsString()
     readonly fio: string;
-    @IsOptional()
+
+    @ApiProperty({
+        uniqueItems: true,
+        example: 1,
+    })
+    @IsNumber()
     readonly businessId: number;
 
+    @ApiProperty({
+        uniqueItems: true,
+        example: [1],
+    })
     @IsOptional()
-    @IsUUID()
-    readonly pointIds: UUID[];
+    @IsNumber()
+    readonly pointIds?: number[];
 }

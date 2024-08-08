@@ -2,7 +2,7 @@ import { MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD } from '@/common/constants/aut
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, Length } from 'class-validator';
 
-export class RequestOwnerDto {
+export class RequestCreateOwnerDto {
     @ApiProperty({
         uniqueItems: true,
         example: '+79000000000',

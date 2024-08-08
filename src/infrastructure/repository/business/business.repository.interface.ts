@@ -1,9 +1,10 @@
-import { IBusinessDomainEntity } from '@/common/interface/business/business.domain-entity.interface';
+import { IBusinessProps } from '@/common/interface/business/business.interface';
+import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
 
 export interface IBusinessRepository {
-    create(createFields: Partial<IBusinessDomainEntity>): Promise<IBusinessDomainEntity>;
-    getByAnyProperties(businessDto: Partial<IBusinessDomainEntity>): Promise<IBusinessDomainEntity>;
-    getByOwnerId(ownerId: number): Promise<IBusinessDomainEntity[] | undefined>;
+    create(createFields: BusinessDomainEntity): Promise<IBusinessProps>;
+    getByAnyProperties(businessDto: Partial<IBusinessProps>): Promise<IBusinessProps>;
+    getByOwnerId(ownerId: number): Promise<IBusinessProps[] | undefined>;
     // update(updateFields: IBusiness): Promise<IBusiness>;
     // getById(id: UUID): Promise<IBusiness>;
 }

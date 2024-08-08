@@ -12,13 +12,6 @@ export class CreateBusinessDto {
     name: string;
 
     @ApiProperty({
-        description: 'The description of the business',
-        example: 'This is a great business that offers excellent services.',
-    })
-    @IsString()
-    description: string;
-
-    @ApiProperty({
         description: 'The address of the business',
         example: '123 Main Street, City, Country',
     })
@@ -41,13 +34,20 @@ export class CreateBusinessDto {
             thursday: { start: '10:00', end: '20:00' },
             friday: { start: '10:00', end: '20:00' },
             saturday: { start: '10:00', end: '20:00' },
-            суббота: { start: '10:00', end: '20:00' },
+            sunday: { start: '10:00', end: '20:00' },
         },
     })
     @IsObject()
     @ValidateNested()
     @Type(() => WorkTimeDto)
     weekWorkTime: WorkTimeDto;
+
+    @ApiProperty({
+        description: 'The UUID of the owner',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+    })
+    @IsNumber()
+    ownerId: number;
 
     @ApiProperty({
         description: 'The website URL of the business',
@@ -59,6 +59,14 @@ export class CreateBusinessDto {
     siteUrl?: string;
 
     @ApiProperty({
+        description: 'The description of the business',
+        example: 'This is a great business that offers excellent services.',
+    })
+    @IsString()
+    @IsOptional()
+    description?: string;
+
+    @ApiProperty({
         description: 'The logo URL of the business',
         required: false,
         example: 'https://www.mybusiness.com/logo.png',
@@ -66,11 +74,4 @@ export class CreateBusinessDto {
     @IsOptional()
     @IsUrl()
     logoUrl?: string;
-
-    @ApiProperty({
-        description: 'The UUID of the owner',
-        example: '123e4567-e89b-12d3-a456-426614174000',
-    })
-    @IsNumber()
-    ownerId: number;
 }

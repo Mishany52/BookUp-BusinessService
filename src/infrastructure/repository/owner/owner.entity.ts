@@ -1,11 +1,11 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IOwner } from '../../../common/interface/owner/owner.interface';
+import { IOwnerProps } from '../../../common/interface/owner/owner.interface';
 import { BusinessEntity } from '../business/business.entity';
 import { MinLength } from 'class-validator';
 import { UUID } from 'crypto';
 
 @Entity({ name: 'owners' })
-export class OwnerEntity implements IOwner {
+export class OwnerEntity implements IOwnerProps {
     @PrimaryGeneratedColumn()
     id: number;
     @Column({ type: 'uuid', nullable: false })

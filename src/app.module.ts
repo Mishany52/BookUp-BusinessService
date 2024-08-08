@@ -6,7 +6,7 @@ import { BusinessModule } from './domains/business/business.module';
 import { OwnerModule } from './domains/owner/owner.module';
 import { AdministratorModule } from './domains/administrator/administrator.module';
 import { TypedConfigModule } from './config/typed-config.module';
-import { ssoServiceProvider } from './domains/sso/sso-service.persistence-provider';
+import { ssoServiceProvider } from './infrastructure/ports/sso-service.persistence-provider';
 import { AccountModule } from './domains/account/account.module';
 
 @Module({

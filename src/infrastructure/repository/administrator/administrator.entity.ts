@@ -1,4 +1,4 @@
-import { IAdministratorDomainEntity } from '@/common/interface/administrator/administrator.interface';
+import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IsBoolean, IsEmail, IsPhoneNumber, IsUrl, IsUUID, Min } from 'class-validator';
 import { UUID } from 'crypto';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -6,7 +6,7 @@ import { BusinessEntity } from '../business/business.entity';
 import { PointEntity } from '../point/point.entity';
 
 @Entity({ name: 'administrators' })
-export class AdministratorEntity implements IAdministratorDomainEntity {
+export class AdministratorEntity implements IAdministratorProps {
     @PrimaryGeneratedColumn()
     id: number;
 

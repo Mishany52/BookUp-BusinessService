@@ -1,16 +1,16 @@
-import { IOwner } from '../owner/owner.interface';
-import { IAdministratorDomainEntity } from '../administrator/administrator.interface';
-import { IWorkTime } from '../time/work-time.interface';
+import { IAdministratorProps } from '../administrator/administrator.interface';
+import { IOwnerProps } from '../owner/owner.interface';
+import { IWorkTimeProps } from '../time/work-time.interface';
 
-export interface IBusiness {
-    id: number;
+export interface IBusinessProps {
+    id?: number;
     name: string;
-    description: string;
     address: string;
     postIndex: number;
-    weekWorkTime: IWorkTime;
-    siteUrl: string;
-    logoUrl: string;
-    owner: IOwner;
-    administrators: IAdministratorDomainEntity[];
+    weekWorkTime: IWorkTimeProps;
+    owner: IOwnerProps;
+    description?: string;
+    siteUrl?: string;
+    logoUrl?: string;
+    administrators?: Array<IAdministratorProps>;
 }

@@ -1,6 +1,6 @@
 import { IAccount } from '@/common/interface/sso/account/account.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumber, IsOptional, IsPhoneNumber, IsString, IsUUID } from 'class-validator';
+import { IsEmail, IsNumber, IsPhoneNumber, IsString, IsUUID } from 'class-validator';
 import { UUID } from 'crypto';
 
 export class CreateAdminDto {
@@ -15,9 +15,8 @@ export class CreateAdminDto {
         uniqueItems: true,
         example: '956c0d26-9d40-46a3-a8a5-2577741ef38c',
     })
-    @IsOptional()
     @IsUUID()
-    accountId?: UUID;
+    accountId: UUID;
 
     @ApiProperty({
         uniqueItems: true,

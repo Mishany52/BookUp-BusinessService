@@ -1,15 +1,15 @@
 import { UUID } from 'crypto';
-import { IBusiness } from '../business/business.interface';
-import { IPoint } from '../point/point.interface';
+import { IPointProps } from '../point/point.interface';
+import { IBusinessProps } from '../business/business.interface';
 
-export interface IAdministratorDomainEntity {
-    id: number;
+export interface IAdministratorProps {
+    id?: number;
     accountId: UUID;
     email: string;
     phone: string;
     fio: string;
     active: boolean;
-    imgUrl: string;
-    business: IBusiness;
-    points: IPoint[];
+    imgUrl?: string;
+    business: IBusinessProps;
+    points?: IPointProps[];
 }

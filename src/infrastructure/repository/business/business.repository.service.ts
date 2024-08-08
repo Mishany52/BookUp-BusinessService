@@ -3,8 +3,8 @@ import { IBusinessRepository } from './business.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessEntity } from './business.entity';
 import { Repository } from 'typeorm';
-import { IBusiness } from '@/common/interface/business/business.interface';
-import { IBusinessDomainEntity } from '@/common/interface/business/business.domain-entity.interface';
+import { IBusinessProps } from '@/common/interface/business/business.interface';
+import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
 
 @Injectable()
 export class BusinessRepository implements IBusinessRepository {
@@ -13,23 +13,31 @@ export class BusinessRepository implements IBusinessRepository {
         private readonly _businessRepository: Repository<BusinessEntity>,
     ) {}
 
-    async create(createFields: IBusinessDomainEntity): Promise<IBusiness> {
+    async create(createFields: IBusinessProps): Promise<BusinessDomainEntity> {
         const business = this._businessRepository.create(createFields);
-        return await this._businessRepository.save(business);
+        const businessEntity = await this._businessRepository.save(business);
+        return BusinessDomainEntity.create(businessEntity);
     }
 
-    getByAnyProperties(
-        businessDto: Partial<IBusinessDomainEntity>,
-    ): Promise<IBusinessDomainEntity> {
-        return this._businessRepository.findOne({ where: { ...businessDto } });
-    }
-
-    async getByOwnerId(ownerId: number): Promise<IBusinessDomainEntity[] | undefined> {
-        const business = await this._businessRepository.find({
-            where: { owner: { id: ownerId } },
-            relations: ['owner'],
+    async getByAnyProperties(businessDto: Partial<IBusinessProps>): Promise<IBusinessProps> {
+        const business = await this._businessRepository.findOne({
+            where: { ...businessDto },
+            relations: { owner: true },
         });
         return business;
+    }
+
+    async getByOwnerId(ownerId: number): Promise<IBusinessProps[] | undefined> {
+        const businesses = await this._businessRepository.find({
+            where: { owner: { id: ownerId } },
+            relations: { owner: true },
+        });
+
+        if (!businesses || businesses.length === 0) {
+            return undefined;
+        }
+
+        return businesses;
     }
     // async update(ownerUpdate: UpdateOwnerDto): Promise<IOwner> {
     //     try {
