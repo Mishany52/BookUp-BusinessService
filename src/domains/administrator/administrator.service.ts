@@ -88,7 +88,20 @@ export class AdministratorService {
     async getByAccountId(accountId: UUID) {
         return this._adminRepository.getByAccountId(accountId);
     }
-
+    async getByBusinessId(businessId: number): Promise<GetAdminDto[]> {
+        const adminEntities = await this._adminRepository.getByBusinessId(businessId);
+        if (adminEntities == undefined) {
+            throw new HttpException(
+                AdminError.ADMIN_NOT_FOUND_BY_BUSINESS_ID,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        const adminDomainEntities = adminEntities.map((entity) =>
+            AdministratorDomainEntity.create(entity),
+        );
+        const getAdminDtos = adminDomainEntities.map((entity) => entity.getDto());
+        return getAdminDtos;
+    }
     async update(adminId: number, adminUpdateDto: Partial<UpdateAdminDto>): Promise<GetAdminDto> {
         const adminEntity = await this._adminRepository.getById(adminId);
         if (!adminEntity) {

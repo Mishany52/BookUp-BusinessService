@@ -1,5 +1,5 @@
 import { IPointProps } from '@/common/interface/point/point.interface';
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BusinessEntity } from '../business/business.entity';
 import { AdministratorEntity } from '../administrator/administrator.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
@@ -24,13 +24,7 @@ export class PointEntity implements IPointProps {
     address: string;
 
     @Column({ type: 'integer', nullable: false })
-    postIdex: number;
-
-    @Column({ type: 'time', nullable: false })
-    startAt: Date;
-
-    @Column({ type: 'time', nullable: false })
-    stopAt: Date;
+    postIndex: number;
 
     @Column({ type: 'varchar', nullable: true })
     siteUrl: string;
@@ -38,15 +32,17 @@ export class PointEntity implements IPointProps {
     @Column({ type: 'varchar', nullable: true })
     logoUrl: string;
 
-    @ManyToOne(() => BusinessEntity, (business) => business.points)
+    @ManyToOne(() => BusinessEntity, (business) => business.points, { nullable: false })
     business: BusinessEntity;
 
-    @ManyToOne(() => AdministratorEntity, (admin) => admin.points)
+    @ManyToOne(() => AdministratorEntity, (admin) => admin.points, { nullable: true })
     administrator: AdministratorEntity;
 
-    @ManyToMany(() => EmployeeEntity)
+    @ManyToMany(() => EmployeeEntity, { nullable: true })
+    @JoinTable()
     employees: EmployeeEntity[];
 
-    @ManyToMany(() => TagEntity)
+    @ManyToMany(() => TagEntity, { nullable: false })
+    @JoinTable()
     tags: TagEntity[];
 }
