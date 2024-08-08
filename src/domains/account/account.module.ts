@@ -1,4 +1,4 @@
-import { AccountController } from '@/api/http/controllers/account.http-controller';
+import { AccountController } from '@/api/http/controllers/account-http.controller';
 import { Module } from '@nestjs/common';
 import { OwnerModule } from '../owner/owner.module';
 import { AdministratorModule } from '../administrator/administrator.module';

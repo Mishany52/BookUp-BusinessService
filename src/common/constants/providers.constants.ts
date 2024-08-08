@@ -5,4 +5,6 @@ export enum Providers {
     BUSINESS_REPO = 'businessRepo',
     ACCOUNT_SERVICE = 'accountService',
     AUTH_SERVICE = 'authService',
+    POINT_REPO = 'pointRepo',
+    TAG_REPO = 'tagRepo',
 }
