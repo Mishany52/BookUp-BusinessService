@@ -33,7 +33,6 @@ export class BusinessService {
             const businessDomainEntity = BusinessDomainEntity.create({ ...businessDto, owner });
             const businessEntity = await this._businessRepository.create(businessDomainEntity);
             return BusinessDomainEntity.create(businessEntity);
-            return BusinessDomainEntity.create(businessEntity);
         } catch (error) {
             throw new HttpException(BusinessError.BUSINESS_NOT_CREATED, HttpStatus.BAD_REQUEST);
         }

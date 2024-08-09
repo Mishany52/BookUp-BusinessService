@@ -1,5 +1,5 @@
 import { OwnerService } from '@/domains/owner/owner.service';
-import { Body, Controller, Inject, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RequestCreateOwnerDto } from './dto/owner/request-owner.dto';
 import { AccountRole } from '@/common/enums/account-role.enum';
@@ -8,7 +8,10 @@ import { GetOwnerDto } from './dto/owner/get-owner.dto';
 import { UpdateOwnerDto } from '@/api/http/controllers/dto/owner/update-owner.dto';
 import { IAuthServicePort } from '@/infrastructure/ports/auth-service.port';
 import { Providers } from '@/common/constants/providers.constants';
+import { Roles } from '@/infrastructure/decorators/roles.decorator';
+import { SSOAuthGuard } from '@/infrastructure/guards/sso-auth.guard';
 const authService = () => Inject(Providers.AUTH_SERVICE);
+@UseGuards(SSOAuthGuard)
 @ApiTags('Owner')
 @Controller('owner')
 export class OwnerHttpController {
@@ -31,14 +34,14 @@ export class OwnerHttpController {
 
         return this._ownerService.create(createOwnerDto);
     }
-
+    @Roles(AccountRole.owner)
     @ApiOperation({ summary: 'Деактивация владельца бизнеса' })
     @ApiResponse({ status: 200 })
     @Patch('deactivate/:id')
     async delete(@Param('id') ownerId: number): Promise<GetOwnerDto> {
         return this._ownerService.deactivate(ownerId);
     }
-
+    @Roles(AccountRole.owner)
     @ApiOperation({ summary: 'Обновления данных владельца бизнеса' })
     @ApiResponse({ status: 200 })
     @Patch('update/:id')
