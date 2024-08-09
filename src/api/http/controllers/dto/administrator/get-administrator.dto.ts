@@ -49,7 +49,7 @@ export class GetAdminDto implements IAdministratorProps {
         this.fio = admin.fio;
         this.active = admin.active;
         this.imgUrl = admin.imgUrl;
-        this.business = admin.business;
+        // this.business = admin.business;
         this.points = admin.points;
     }
 }

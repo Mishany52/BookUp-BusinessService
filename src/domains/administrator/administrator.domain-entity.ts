@@ -22,7 +22,7 @@ export class AdministratorDomainEntity implements IAdministratorProps {
         this.phone = props.phone;
         this.fio = props.fio;
         this.active = props.active;
-        this.business = props.business;
+        // this.business = props.business;
         this.points = props.points || null;
     }
 
