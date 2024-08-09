@@ -3,8 +3,8 @@ import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/
 import { BusinessService } from '@/domains/business/business.service';
 import { CreateBusinessDto } from '@/api/http/controllers/dto/business/create-business.dto';
 import { BusinessDomainEntity } from '@/domains/business/business.domain-entity';
-import { GetBusinessDto } from './dto/business/get-business.dto';
 import { GetBusinessQueryDto } from './dto/business/get-business-query.dto';
+import { GetBusinessCountAllWorkersDto } from './dto/business/get-business-for-list.dto';
 
 @Controller('business')
 @ApiTags('business')
@@ -23,13 +23,13 @@ export class BusinessHttpController {
     @ApiOperation({ summary: 'Получение бизнеса по id владельца' })
     @ApiCreatedResponse({
         description: 'Business have been successfully created',
-        type: GetBusinessDto,
+        type: [GetBusinessCountAllWorkersDto],
     })
     @Get('by-owner-id')
     async getByOwnerId(
         @Query('ownerId', ParseIntPipe) ownerId: number,
-    ): Promise<GetBusinessDto[] | undefined> {
-        return this._businessService.getByOwnerId(ownerId);
+    ): Promise<GetBusinessCountAllWorkersDto[] | undefined> {
+        return this._businessService.getListByOwnerId(ownerId);
     }
 
     @Get('by-properties')

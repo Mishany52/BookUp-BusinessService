@@ -1,9 +1,9 @@
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IsBoolean, IsEmail, IsPhoneNumber, IsUrl, IsUUID, Min } from 'class-validator';
 import { UUID } from 'crypto';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { BusinessEntity } from '../business/business.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, JoinTable, ManyToOne } from 'typeorm';
 import { PointEntity } from '../point/point.entity';
+import { BusinessEntity } from '../business/business.entity';
 
 @Entity({ name: 'administrators' })
 export class AdministratorEntity implements IAdministratorProps {
@@ -35,9 +35,10 @@ export class AdministratorEntity implements IAdministratorProps {
     @IsUrl()
     imgUrl: string;
 
+    @ManyToMany(() => PointEntity)
+    @JoinTable()
+    points: PointEntity[];
+
     @ManyToOne(() => BusinessEntity, (business) => business.administrators)
     business: BusinessEntity;
-
-    @OneToMany(() => PointEntity, (point) => point.business)
-    points: PointEntity[];
 }

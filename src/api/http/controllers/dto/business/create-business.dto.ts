@@ -19,13 +19,6 @@ export class CreateBusinessDto {
     address: string;
 
     @ApiProperty({
-        description: 'The postal index of the business',
-        example: 12345,
-    })
-    @IsNumber()
-    postIndex: number;
-
-    @ApiProperty({
         description: 'The working time of the business in JSON format',
         example: {
             monday: { start: '10:00', end: '20:00' },
@@ -48,6 +41,14 @@ export class CreateBusinessDto {
     })
     @IsNumber()
     ownerId: number;
+
+    @ApiProperty({
+        description: 'The postal index of the business',
+        example: 12345,
+    })
+    @IsNumber()
+    @IsOptional()
+    postIndex?: number;
 
     @ApiProperty({
         description: 'The website URL of the business',

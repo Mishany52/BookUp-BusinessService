@@ -6,6 +6,7 @@ import { BusinessDomainEntity } from './business.domain-entity';
 import { BusinessError } from '@/common/constants/http-messages/errors.constants';
 import { Providers } from '../../common/constants/providers.constants';
 import { GetBusinessDto } from '@/api/http/controllers/dto/business/get-business.dto';
+import { GetBusinessCountAllWorkersDto } from '@/api/http/controllers/dto/business/get-business-for-list.dto';
 
 const businessRepo = () => Inject(Providers.BUSINESS_REPO);
 @Injectable()
@@ -37,7 +38,18 @@ export class BusinessService {
             throw new HttpException(BusinessError.BUSINESS_NOT_CREATED, HttpStatus.BAD_REQUEST);
         }
     }
+    async getListByOwnerId(ownerId: number): Promise<GetBusinessCountAllWorkersDto[]> {
+        try {
+            const businessEntities = await this._businessRepository.getByOwnerId(ownerId);
 
+            const businessDomainEntities = businessEntities.map((business) =>
+                BusinessDomainEntity.create(business),
+            );
+            return businessDomainEntities.map((business) => business.getList());
+        } catch (e) {
+            throw new HttpException(BusinessError.BUSINESS_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+    }
     async getByOwnerId(ownerId: number): Promise<GetBusinessDto[]> {
         try {
             const businessEntities = await this._businessRepository.getByOwnerId(ownerId);

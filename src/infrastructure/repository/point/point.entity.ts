@@ -1,10 +1,10 @@
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BusinessEntity } from '../business/business.entity';
-import { AdministratorEntity } from '../administrator/administrator.entity';
-import { EmployeeEntity } from '../employee/employee.entity';
 import { TagEntity } from '../tag/tag.entity';
 import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
+import { AdministratorEntity } from '../administrator/administrator.entity';
+import { EmployeeEntity } from '../employee/employee.entity';
 
 @Entity({ name: 'points' })
 export class PointEntity implements IPointProps {
@@ -35,14 +35,14 @@ export class PointEntity implements IPointProps {
     @ManyToOne(() => BusinessEntity, (business) => business.points, { nullable: false })
     business: BusinessEntity;
 
+    @ManyToMany(() => TagEntity)
+    @JoinTable()
+    tags: TagEntity[];
+
     @ManyToOne(() => AdministratorEntity, (admin) => admin.points, { nullable: true })
     administrator: AdministratorEntity;
 
     @ManyToMany(() => EmployeeEntity, { nullable: true })
     @JoinTable()
     employees: EmployeeEntity[];
-
-    @ManyToMany(() => TagEntity, { nullable: false })
-    @JoinTable()
-    tags: TagEntity[];
 }
