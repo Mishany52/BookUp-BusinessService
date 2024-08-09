@@ -23,7 +23,7 @@ export class PointEntity implements IPointProps {
     @Column({ type: 'varchar', nullable: false })
     address: string;
 
-    @Column({ type: 'integer', nullable: false })
+    @Column({ type: 'integer', nullable: true })
     postIndex: number;
 
     @Column({ type: 'varchar', nullable: true })
