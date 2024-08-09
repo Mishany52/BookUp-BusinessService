@@ -1,4 +1,3 @@
-import { CreateBusinessDto } from './create-business.dto';
 import { IBusinessProps } from '@/common/interface/business/business.interface';
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IOwnerProps } from '@/common/interface/owner/owner.interface';

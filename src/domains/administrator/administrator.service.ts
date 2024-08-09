@@ -6,7 +6,7 @@ import { AdminError, BusinessError } from '@/common/constants/http-messages/erro
 import { Providers } from '@/common/constants/providers.constants';
 import { CheckAccountDto } from '@/common/dto/account/check-account.dto';
 import { IAccount } from '@/common/interface/sso/account/account.interface';
-import { RequestCreateAdminDto } from '@/api/http/controllers/dto/administrator/request-admin.dto';
+
 import { AdministratorDomainEntity } from './administrator.domain-entity';
 import { IAdministratorProps } from '@/common/interface/administrator/administrator.interface';
 import { IBusinessProps } from '@/common/interface/business/business.interface';
@@ -18,6 +18,7 @@ import { IAccountServicePort } from '@/infrastructure/ports/account-service.port
 import { IAuthServicePort } from '@/infrastructure/ports/auth-service.port';
 import { SignUpDto } from '@/api/http/controllers/dto/auth/sing-up.dto';
 import { UUID } from 'crypto';
+import { CreateAdminRequestDto } from '@/api/http/controllers/dto/requests/create-admin.request-dto';
 const adminRepo = () => Inject(Providers.ADMIN_REPO);
 const accountService = () => Inject(Providers.ACCOUNT_SERVICE);
 const authService = () => Inject(Providers.AUTH_SERVICE);
@@ -30,7 +31,7 @@ export class AdministratorService {
         @authService() private readonly _authService: IAuthServicePort,
     ) {}
 
-    async create(adminDto: RequestCreateAdminDto): Promise<GetAdminDto> {
+    async create(adminDto: CreateAdminRequestDto): Promise<GetAdminDto> {
         const accountRequest = {
             email: adminDto.email,
             phone: adminDto.phone,
