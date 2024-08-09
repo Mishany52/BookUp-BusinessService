@@ -1,9 +1,9 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdministratorService } from '@/domains/administrator/administrator.service';
-import { RequestCreateAdminDto } from './dto/administrator/request-admin.dto';
 import { GetAdminDto } from './dto/administrator/get-administrator.dto';
 import { UpdateAdminDto } from './dto/administrator/update-admin.dto';
+import { CreateAdminRequestDto } from './dto/requests/create-admin.request-dto';
 
 @ApiTags('Administrator')
 @Controller('administrator')
@@ -13,7 +13,7 @@ export class AdministratorController {
     @ApiOperation({ summary: 'Создание администратора бизнеса' })
     @ApiResponse({ status: 200 })
     @Post('create')
-    async create(@Body() adminRequest: RequestCreateAdminDto): Promise<GetAdminDto> {
+    async create(@Body() adminRequest: CreateAdminRequestDto): Promise<GetAdminDto> {
         return await this._adminService.create(adminRequest);
     }
 
