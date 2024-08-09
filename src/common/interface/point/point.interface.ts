@@ -8,10 +8,10 @@ export interface IPointProps {
     id?: number;
     name: string;
     address: string;
-    postIndex: number;
     weekWorkTime: IWorkTimeProps;
     business: IBusinessProps;
     tags: ITagProps[];
+    postIndex?: number;
     description?: string;
     siteUrl?: string;
     logoUrl?: string;

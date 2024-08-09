@@ -1,6 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PointEntity } from './point.entity';
-import { pointRepoProvider } from './point.persistence-provider';
+import { pointRepoProvider } from '../../../common/constants/providers/point.persistence-provider';
 import { Module } from '@nestjs/common';
 
 @Module({

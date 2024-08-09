@@ -38,7 +38,7 @@ export class AdministratorRepository implements IAdministratorRepository {
         });
 
         if (!admins || admins.length === 0) {
-            return undefined;
+            return;
         }
 
         return admins;
