@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { OwnerRepository } from './owner.repository.service';
+import { OwnerRepository } from '@/infrastructure/repository/owner/owner.repository.service';
 
 export const ownerRepoProvider: Provider = {
     provide: 'ownerRepo',

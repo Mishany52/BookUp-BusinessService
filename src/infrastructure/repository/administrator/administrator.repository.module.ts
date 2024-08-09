@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { adminRepoProvider } from './ administrator.persistence-provider';
+import { adminRepoProvider } from '@/common/constants/providers/ administrator.persistence-provider';
 import { AdministratorEntity } from './administrator.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
 
