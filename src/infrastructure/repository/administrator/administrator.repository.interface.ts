@@ -7,4 +7,5 @@ export interface IAdministratorRepository {
     update(adminUpdate: Partial<IAdministratorProps>): Promise<IAdministratorProps>;
     getById(adminId: number): Promise<IAdministratorProps>;
     getByAccountId(accountId: UUID): Promise<IAdministratorProps>;
+    getByBusinessId(businessId: number): Promise<IAdministratorProps[] | undefined>;
 }

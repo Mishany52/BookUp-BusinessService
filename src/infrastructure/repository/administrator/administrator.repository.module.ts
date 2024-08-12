@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { adminRepoProvider } from './ administrator.persistence-provider';
 import { AdministratorEntity } from './administrator.entity';
-import { PointEntity } from '../point/point.entity';
 import { EmployeeEntity } from '../employee/employee.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([AdministratorEntity, PointEntity, EmployeeEntity])],
+    imports: [TypeOrmModule.forFeature([AdministratorEntity, EmployeeEntity])],
     providers: [adminRepoProvider],
     exports: [adminRepoProvider],
 })

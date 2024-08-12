@@ -5,16 +5,16 @@ import { IBusinessProps } from '../business/business.interface';
 import { IAdministratorProps } from '../administrator/administrator.interface';
 
 export interface IPointProps {
-    id: number;
+    id?: number;
     name: string;
-    description: string;
     address: string;
-    postIdex: number;
+    postIndex: number;
     weekWorkTime: IWorkTimeProps;
-    siteUrl: string;
-    logoUrl: string;
     business: IBusinessProps;
-    administrator: IAdministratorProps;
-    employees: IEmployeeProps[];
     tags: ITagProps[];
+    description?: string;
+    siteUrl?: string;
+    logoUrl?: string;
+    administrator?: IAdministratorProps;
+    employees?: IEmployeeProps[];
 }

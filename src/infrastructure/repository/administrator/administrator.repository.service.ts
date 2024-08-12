@@ -30,4 +30,14 @@ export class AdministratorRepository implements IAdministratorRepository {
     async getByAccountId(accountId: UUID): Promise<IAdministratorProps> {
         return this._adminRepository.findOneBy({ accountId });
     }
+
+    async getByBusinessId(businessId: number): Promise<IAdministratorProps[] | undefined> {
+        const admins = await this._adminRepository.find({});
+
+        if (!admins || admins.length === 0) {
+            return undefined;
+        }
+
+        return admins;
+    }
 }

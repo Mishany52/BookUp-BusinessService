@@ -1,4 +1,12 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OwnerEntity } from '../owner/owner.entity';
 import { AdministratorEntity } from '../administrator/administrator.entity';
 import { PointEntity } from '../point/point.entity';
@@ -39,12 +47,13 @@ export class BusinessEntity implements IBusinessProps {
     @OneToMany(() => AdministratorEntity, (administrator) => administrator.business)
     administrators: AdministratorEntity[];
 
-    @OneToMany(() => PointEntity, (point) => point.business)
-    points: PointEntity[];
-
     @OneToMany(() => EmployeeEntity, (employee) => employee.business)
     employees: EmployeeEntity[];
 
+    @OneToMany(() => PointEntity, (point) => point.business)
+    points: PointEntity[];
+
     @ManyToMany(() => TagEntity)
+    @JoinTable()
     tags: TagEntity[];
 }

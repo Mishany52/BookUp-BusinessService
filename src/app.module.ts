@@ -8,6 +8,8 @@ import { AdministratorModule } from './domains/administrator/administrator.modul
 import { TypedConfigModule } from './config/typed-config.module';
 import { ssoServiceProvider } from './infrastructure/ports/sso-service.persistence-provider';
 import { AccountModule } from './domains/account/account.module';
+import { TagModule } from './domains/tag/tag.module';
+import { PointModule } from './domains/point/point.module';
 
 @Module({
     imports: [
@@ -23,6 +25,8 @@ import { AccountModule } from './domains/account/account.module';
         OwnerModule,
         AdministratorModule,
         AccountModule,
+        TagModule,
+        PointModule,
     ],
     providers: [ssoServiceProvider],
 })
