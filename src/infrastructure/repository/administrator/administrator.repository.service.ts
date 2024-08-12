@@ -35,7 +35,7 @@ export class AdministratorRepository implements IAdministratorRepository {
         const admins = await this._adminRepository.find({});
 
         if (!admins || admins.length === 0) {
-            return undefined;
+            return;
         }
 
         return admins;

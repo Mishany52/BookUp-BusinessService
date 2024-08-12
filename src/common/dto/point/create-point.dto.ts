@@ -19,7 +19,7 @@ export class CreatePointDto implements IPointProps {
         this.name = props.name;
         this.description = props.description || null;
         this.address = props.address;
-        this.postIndex = props.postIndex;
+        this.postIndex = props.postIndex || null;
         this.weekWorkTime = props.weekWorkTime;
         this.siteUrl = props.siteUrl || null;
         this.logoUrl = props.logoUrl || null;

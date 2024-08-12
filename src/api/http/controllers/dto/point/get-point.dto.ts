@@ -4,33 +4,43 @@ import { IEmployeeProps } from '@/common/interface/employee/employee.interface';
 import { IPointProps } from '@/common/interface/point/point.interface';
 import { ITagProps } from '@/common/interface/tag/tag.interface';
 import { IWorkTimeProps } from '@/common/interface/time/work-time.interface';
-import { Expose, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { GetAdminDto } from '../administrator/get-administrator.dto';
 import { GetBusinessDto } from '../business/get-business.dto';
 import { WorkTimeDto } from '@/common/dto/time/work-time.dto';
+import { IsNumber, IsObject, IsString } from 'class-validator';
 
 export class GetPointDto implements IPointProps {
-    @Expose()
+    @IsNumber()
     id: number;
-    @Expose()
+
+    @IsString()
     name: string;
-    @Expose()
+
+    @IsString()
     description: string;
-    @Expose()
+
+    @IsString()
     address: string;
-    @Expose()
+
+    @IsNumber()
     postIndex: number;
-    @Expose()
+
+    @IsObject()
     @Type(() => WorkTimeDto)
     weekWorkTime: IWorkTimeProps;
-    @Expose()
+
+    @IsString()
     siteUrl: string;
-    @Expose()
+
+    @IsString()
     logoUrl: string;
-    @Expose()
+
+    @IsObject()
     @Type(() => GetBusinessDto)
     business: IBusinessProps;
-    @Expose()
+
+    @IsObject()
     @Type(() => GetAdminDto)
     administrator: IAdministratorProps;
 

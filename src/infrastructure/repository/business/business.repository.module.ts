@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BusinessEntity } from './business.entity';
-import { businessRepoProvider } from './business.persistence-provider';
+import { businessRepoProvider } from '@/common/constants/providers/business.persistence-provider';
 
 @Module({
     imports: [TypeOrmModule.forFeature([BusinessEntity])],
